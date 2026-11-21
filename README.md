@@ -85,6 +85,21 @@ The Lumen VDD driver comes prebuilt and signed in `third_party/lumen-vdd`; to bu
 [lumen-vdd](https://github.com/aimbyLeet/lumen-vdd). The code layout is in [docs/MAP.md](docs/MAP.md), the design
 in [docs/architecture.md](docs/architecture.md), all commands in [docs/commands.md](docs/commands.md).
 
+### Support the project
+
+Lumen is free. If it is useful to you and you want to support its development, donations in crypto are welcome.
+Send only in the network given for the address — coins sent in another network can be lost.
+
+| Network | What to send | Address |
+|---|---|---|
+| Bitcoin | BTC | `bc1qex7hgmd95qwrym00m57krx7ykgllskcwyv6uyc` |
+| Tron (TRC-20) | USDT, TRX | `TBR3WAEv8zwesDNNttvb3jobKafdhAWdKb` |
+| BNB Smart Chain (BEP-20) | USDT, BNB | `0xAA41D700De7A3625A779FD6D3aE4dfEca1379B87` |
+| Solana | SOL, USDT, USDC | `GgvF3KJJQXJ76xzu1pQ6yWATE6DYabNWNcEoxRXPuUuV` |
+| TON | TON, USDT | `UQD1uRU9MxmweO-ROHWo4kZxkYVFj4j8V1eTsicn_iYThlSb` |
+
+Thank you!
+
 ### License
 
 MIT, see [LICENSE-MIT](LICENSE-MIT). Third-party parts keep their licenses: Opus (`crates/opus-sys/libopus`,
@@ -167,6 +182,21 @@ deploy\build-server.ps1       # dist\lumen-server-<версия>.tar.gz (пос�
 Драйвер Lumen VDD лежит собранным и подписанным в `third_party/lumen-vdd`; собрать его самому —
 [lumen-vdd](https://github.com/aimbyLeet/lumen-vdd). Устройство кода — [docs/MAP.md](docs/MAP.md), архитектура —
 [docs/architecture.md](docs/architecture.md), все команды — [docs/commands.md](docs/commands.md).
+
+### Поддержать проект
+
+Lumen бесплатный. Если он вам полезен и вы хотите поддержать разработку — будем рады пожертвованиям в криптовалюте.
+Отправляйте только в той сети, что указана для адреса: монеты, отправленные в другой сети, могут потеряться.
+
+| Сеть | Что отправлять | Адрес |
+|---|---|---|
+| Bitcoin | BTC | `bc1qex7hgmd95qwrym00m57krx7ykgllskcwyv6uyc` |
+| Tron (TRC-20) | USDT, TRX | `TBR3WAEv8zwesDNNttvb3jobKafdhAWdKb` |
+| BNB Smart Chain (BEP-20) | USDT, BNB | `0xAA41D700De7A3625A779FD6D3aE4dfEca1379B87` |
+| Solana | SOL, USDT, USDC | `GgvF3KJJQXJ76xzu1pQ6yWATE6DYabNWNcEoxRXPuUuV` |
+| TON | TON, USDT | `UQD1uRU9MxmweO-ROHWo4kZxkYVFj4j8V1eTsicn_iYThlSb` |
+
+Спасибо!
 
 ### Лицензия
 
