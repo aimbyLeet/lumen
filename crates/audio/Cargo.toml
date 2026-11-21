@@ -1,0 +1,15 @@
+[package]
+name = "audio"
+description = "Sound: what Windows plays, captured with WASAPI loopback (Windows); WAV files and test-tone checks (any OS)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+opus-sys.workspace = true
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+windows.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

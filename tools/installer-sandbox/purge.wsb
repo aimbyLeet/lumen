@@ -1,0 +1,21 @@
+<!-- Windows Sandbox: "Delete user data" on uninstall (run-purge.ps1).
+     Before: the installer into bench-out\sandbox\purge (tools\installer-sandbox\build.ps1 -Versions 0.6.90 -Out purge).
+     The report: bench-out\sandbox\purge\report.txt. -->
+<Configuration>
+  <Networking>Enable</Networking>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\dev\lumen\tools\installer-sandbox</HostFolder>
+      <SandboxFolder>C:\LumenTests</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\dev\lumen\bench-out\sandbox</HostFolder>
+      <SandboxFolder>C:\LumenOut</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -NoExit -ExecutionPolicy Bypass -File C:\LumenTests\run-purge.ps1</Command>
+  </LogonCommand>
+</Configuration>

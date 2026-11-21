@@ -1,0 +1,35 @@
+# Lumen server behind the VPS's nginx (install.sh writes this file; settings: .env).
+#
+#   docker compose up -d          # start, and after editing .env
+#   docker compose logs -f        # logs
+#
+# Host network: signaling (TLS, its own port) is open to the world; the web
+# admin speaks plain HTTP on 127.0.0.1 only, nginx proxies to it with its TLS.
+# The certificate is the one certbot of the VPS keeps in /etc/letsencrypt.
+
+name: lumen
+
+services:
+  server:
+    image: lumen-server:@VERSION@
+    container_name: lumen-server
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      LUMEN_MODE: public
+      LUMEN_DOMAIN: ${LUMEN_DOMAIN:?set LUMEN_DOMAIN in .env}
+      LUMEN_CERT_NAME: ${LUMEN_CERT_NAME:-}
+      LUMEN_SIGNAL_PORT: ${LUMEN_SIGNAL_PORT:-7443}
+      LUMEN_ADMIN_PORT: ${LUMEN_ADMIN_PORT:-7480}
+      LUMEN_ADMIN_USER: ${LUMEN_ADMIN_USER:?set LUMEN_ADMIN_USER in .env}
+      LUMEN_ADMIN_PASSWORD: ${LUMEN_ADMIN_PASSWORD:?set LUMEN_ADMIN_PASSWORD in .env}
+    volumes:
+      # Devices, access, quality (lumen.db): on the VPS, survives updates.
+      - ./data:/data
+      # live/ links into archive/: the whole folder, read-only.
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,23 @@
+[package]
+name = "lumen-bench"
+description = "Capture -> P010 -> NVENC quality and latency bench (Windows + NVIDIA)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-bench"
+path = "src/main.rs"
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+capture.workspace = true
+gpu-convert.workspace = true
+nvenc.workspace = true
+transport.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

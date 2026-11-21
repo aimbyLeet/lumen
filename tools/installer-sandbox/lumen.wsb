@@ -1,0 +1,21 @@
+<!-- Windows Sandbox for the installer checks.
+     Before: tools\installer-sandbox\build.ps1 (test installers into bench-out\sandbox\setup).
+     The tests start at logon; the report: bench-out\sandbox\results\report.txt. -->
+<Configuration>
+  <Networking>Enable</Networking>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\dev\lumen\tools\installer-sandbox</HostFolder>
+      <SandboxFolder>C:\LumenTests</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\dev\lumen\bench-out\sandbox</HostFolder>
+      <SandboxFolder>C:\LumenOut</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -NoExit -ExecutionPolicy Bypass -File C:\LumenTests\run-tests.ps1</Command>
+  </LogonCommand>
+</Configuration>

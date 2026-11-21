@@ -1,0 +1,18 @@
+[package]
+name = "vdd"
+description = "Lumen VDD virtual monitors: the driver contract (lumen_vdd_ioctl.h), monitor layout, Windows display config"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+windows.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

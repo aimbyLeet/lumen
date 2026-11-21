@@ -1,0 +1,16 @@
+[package]
+name = "gpu-convert"
+description = "D3D11 shaders: BGRA8 -> P010 (BT.709 full range, 4:2:0, 10-bit)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+color.workspace = true
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+windows.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

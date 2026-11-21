@@ -1,0 +1,8 @@
+# cargo-nextest settings (optional runner; `cargo test --workspace` stays the reference).
+# Timing tests (see docs/pitfalls.md, "tests with time") measure sleep and UDP pacing:
+# under parallel load they fail, so each of them takes every test slot and runs alone.
+# Doctests: nextest does not run them; the workspace has none.
+
+[[profile.default.overrides]]
+filter = "(package(transport) & kind(test)) | (package(input) & kind(test))"
+threads-required = "num-test-threads"

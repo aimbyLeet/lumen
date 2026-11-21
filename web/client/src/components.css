@@ -1,0 +1,124 @@
+/* What every Lumen interface shares: the hub, Lumen Host, the admin, the overlays. */
+/* Status */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-high);
+  font: 500 12px/18px var(--mono);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.pill i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+/* Two lines, centred, without the dot. */
+.pill.two {
+  padding: 3px 12px 4px;
+  border-radius: 12px;
+}
+.pill-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.pill-detail {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 16px;
+  opacity: 0.8;
+}
+.pill.ok {
+  color: var(--ok);
+  background: rgba(91, 233, 173, 0.1);
+  border-color: rgba(91, 233, 173, 0.3);
+}
+.pill.active {
+  color: var(--active);
+  background: rgba(123, 208, 255, 0.1);
+  border-color: rgba(123, 208, 255, 0.3);
+}
+.pill.wait {
+  color: var(--wait);
+  background: rgba(255, 183, 124, 0.1);
+  border-color: rgba(255, 183, 124, 0.3);
+}
+.pill.bad {
+  color: var(--bad);
+  background: rgba(255, 180, 171, 0.1);
+  border-color: rgba(255, 180, 171, 0.3);
+}
+/* Buttons */
+.btn {
+  height: 34px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--bg-high);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) {
+  background: var(--bg-bright);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  background: var(--bg-low);
+  border-color: var(--line-soft);
+  color: var(--text-3);
+}
+.btn.primary:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.btn.square {
+  width: 34px;
+  padding: 0;
+  flex: none;
+}
+.btn.danger {
+  color: var(--text-3);
+}
+.btn.danger:hover:not(:disabled) {
+  border-color: var(--bad);
+  background: rgba(147, 0, 10, 0.4);
+  color: var(--bad);
+}
+
+/* A headed panel: the heading, then its content; --inset: how far the text stands in. */
+.section-title {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  padding: 0 var(--inset);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.panel {
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--bg-low);
+}

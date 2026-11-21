@@ -1,0 +1,10 @@
+[package]
+name = "protocol"
+description = "Lumen wire format: packet headers, video fragments, control messages, capability negotiation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+
+[dependencies]
+ring.workspace = true

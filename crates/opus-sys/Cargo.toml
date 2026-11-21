@@ -1,0 +1,10 @@
+[package]
+name = "opus-sys"
+description = "libopus 1.5.2 (xiph.org, BSD-3-Clause; in libopus/), built with cc (float, no SIMD, no DNN), and its C API"
+version.workspace = true
+edition.workspace = true
+license = "MIT AND BSD-3-Clause"
+links = "opus"
+
+[build-dependencies]
+cc.workspace = true

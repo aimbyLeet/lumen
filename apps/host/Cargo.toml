@@ -1,0 +1,33 @@
+[package]
+name = "lumen-host"
+description = "Lumen host: capture -> P010 -> NVENC -> UDP (Windows + NVIDIA)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-host"
+path = "src/main.rs"
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+audio.workspace = true
+capture.workspace = true
+clap.workspace = true
+desktop.workspace = true
+gpu-convert.workspace = true
+input.workspace = true
+nvenc.workspace = true
+protocol.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+signal.workspace = true
+transport.workspace = true
+vdd.workspace = true
+windows.workspace = true
+
+[dev-dependencies]
+lumen-server = { path = "../server" }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+crates/nvenc-sys/src/bindings.rs linguist-generated=true
+crates/nvenc-sys/src/guids.rs linguist-generated=true
+# the signed driver package: byte for byte (the .cat signs the .inf)
+third_party/** binary

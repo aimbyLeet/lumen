@@ -1,0 +1,9 @@
+[package]
+name = "nvenc"
+description = "Low-latency NVENC wrapper (D3D11 input, HEVC Main10 / AV1, 4:2:0 10-bit)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+nvenc-sys.workspace = true

@@ -1,0 +1,14 @@
+/target
+bench-out*/
+*.yuv
+*.bgra
+.idea/
+.claude/worktrees/
+/dist
+# input logs of the input check (tools\local-session.ps1)
+client-input.log
+host-input.log
+# internal notes: plans, history, backlog, the dev stand (not published)
+/notes/
+# the maintainer's personal rules for Claude (not published)
+CLAUDE.local.md

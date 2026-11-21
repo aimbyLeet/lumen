@@ -1,0 +1,10 @@
+[package]
+name = "color"
+description = "Reference colour math: BT.709 full-range Y'CbCr, 4:2:0 siting, CIEDE2000, PSNR"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+rayon.workspace = true
+serde.workspace = true

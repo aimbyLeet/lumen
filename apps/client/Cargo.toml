@@ -1,0 +1,34 @@
+[package]
+name = "lumen-client"
+description = "Lumen client: decode + 10-bit 1:1 display (Windows + NVIDIA)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[build-dependencies]
+embed-resource.workspace = true
+
+[[bin]]
+name = "lumen-client"
+path = "src/main.rs"
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+audio.workspace = true
+capture.workspace = true
+color.workspace = true
+decoder.workspace = true
+desktop.workspace = true
+gpu-convert.workspace = true
+input.workspace = true
+protocol.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+signal.workspace = true
+transport.workspace = true
+clap.workspace = true
+vdd.workspace = true
+windows.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumen — open-source remote access to work machines for small studios and teams</title>
+<meta name="description" content="Lumen is open-source remote access to work machines for small studios and teams: steady, comfortable work, up to 4K at 60 frames per second, video straight between the computers, your own server and access the administrator controls.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/png" href="icon.png">
+<style>
+  /* The look of Lumen Host and Lumen Client: web/client/src/style.css. */
+  @font-face { font-family: "Inter"; font-weight: 100 900; font-display: swap; src: url("fonts/inter-latin-wght-normal.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Inter"; font-weight: 100 900; font-display: swap; src: url("fonts/inter-cyrillic-wght-normal.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-display: swap; src: url("fonts/jetbrains-mono-cyrillic-wght-normal.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  :root {
+    color-scheme: dark;
+    --bg: #0b1326; --bg-lowest: #060e20; --bg-low: #131b2e; --bg-high: #222a3d;
+    --text: #dbe2fd; --text-2: #d1c6ab; --text-3: #9a9078;
+    --line: rgba(77, 70, 50, 0.6); --line-soft: rgba(77, 70, 50, 0.3);
+    --accent: #facc15; --accent-hover: #eec200; --accent-text: #3c2f00; --accent-soft: #ffecb9;
+    --mono: "JetBrains Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; display: flex; flex-direction: column; background: var(--bg); color: var(--text); font: 14px/21px "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p, dl, dd { margin: 0; }
+  svg { display: block; flex: none; fill: currentColor; }
+
+  .bar { flex: none; height: 44px; display: flex; align-items: center; padding: 0 24px; background: var(--bg-lowest); border-bottom: 1px solid var(--line-soft); }
+  .bar .name { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+  .bar img { width: 20px; height: 20px; display: block; }
+
+  /* The language: a globe at the right of the bar; a click switches to the other one (as everywhere in Lumen). */
+  .lang { margin-left: auto; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 3px; background: transparent; color: var(--text-3); cursor: pointer; }
+  .lang:hover { background: var(--bg-high); color: var(--text); }
+  .lang svg { fill: none; }
+
+  main { flex: 1 0 auto; width: 100%; max-width: 1040px; margin: 0 auto; padding: 56px 24px 40px; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 48px; align-items: center; margin-bottom: 56px; }
+  h1 { font-size: 34px; line-height: 42px; font-weight: 650; color: var(--accent-soft); letter-spacing: -0.01em; margin-bottom: 14px; }
+  .lead { max-width: 480px; color: var(--text-2); font-size: 15px; line-height: 24px; margin-bottom: 26px; }
+  .download { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 24px; border-radius: 3px; background: var(--accent); color: var(--accent-text); font-size: 14px; font-weight: 600; text-decoration: none; }
+  .download:hover { background: var(--accent-hover); }
+  .download:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .meta { margin-top: 10px; font: 500 12px var(--mono); color: var(--text-3); }
+
+  /* The desk of Lumen Host's "Monitors" tab, as a picture. */
+  .desk { position: relative; height: 270px; border: 1px solid var(--line-soft); border-radius: 6px; background-color: var(--bg-lowest); background-image: radial-gradient(rgba(219, 226, 253, 0.1) 1px, transparent 1px); background-size: 20px 20px; overflow: hidden; }
+  .mon { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1.5px solid var(--text-3); border-radius: 4px; background: var(--bg-high); }
+  .mon.v { border-color: var(--accent); background: #2c2b25; }
+  .mon b { font: 600 22px/26px var(--mono); }
+  .mon span { font: 500 11px/15px var(--mono); color: var(--text-2); }
+  .m1 { left: 8%; top: 28%; width: 49%; height: 49%; }
+  .m2 { left: 57%; top: 40%; width: 33%; height: 33%; }
+  .m3 { left: 57%; top: 15%; width: 25%; height: 25%; }
+  .m3 b { font-size: 15px; line-height: 18px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 40px; }
+  .card { padding: 16px 18px 18px; border: 1px solid var(--line-soft); border-radius: 6px; background: var(--bg-low); }
+  .card h2 { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; font-weight: 600; line-height: 20px; }
+  .card h2 svg { color: var(--accent); }
+  .card p { font-size: 13px; line-height: 20px; color: var(--text-2); }
+
+  .needs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 20px 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); margin-bottom: 20px; }
+  .needs dt { margin-bottom: 2px; font-size: 12px; color: var(--text-3); }
+  .needs dd { font-size: 13px; line-height: 20px; color: var(--text); }
+  .note { font-size: 12px; line-height: 18px; color: var(--text-3); }
+  .note + .note { margin-top: 6px; }
+  code { font: 12px/18px var(--mono); word-break: break-all; }
+
+  footer { flex: none; height: 26px; display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; background: var(--bg-lowest); border-top: 1px solid var(--line-soft); font: 12px var(--mono); color: var(--text-3); }
+
+  @media (max-width: 820px) {
+    main { padding-top: 32px; }
+    .hero { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-bottom: 32px; }
+    h1 { font-size: 27px; line-height: 34px; }
+    .desk { height: 210px; }
+    .cards { grid-template-columns: minmax(0, 1fr); }
+    .needs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="name"><img src="icon.png" alt=""><span>Lumen</span></div>
+  <button type="button" class="lang" id="lang-button" aria-label="Русский" title="Русский">
+    <svg width="20" height="20" viewBox="0 0 20 20" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="8.25"/><ellipse cx="10" cy="10" rx="3.5" ry="8.25"/><path d="M1.75 10h16.5"/></svg>
+  </button>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <h1 data-i18n="h1">Remote access for small studios</h1>
+      <p class="lead" data-i18n="lead">Lumen is open source. Connect to your work computer from home or another office and work as if you sat at it: steady, comfortable, with sound, clipboard and files. The video goes straight between the computers, and the team has its own server.</p>
+      <a class="download" href="lumen-setup-@VERSION@.exe" download data-i18n="download">Download for Windows</a>
+      <p class="meta" data-i18n="meta">Version @VERSION@ · @SIZE@ MB</p>
+    </div>
+    <div class="desk" aria-hidden="true">
+      <div class="mon m1"><b>1</b><span>3840×2160</span></div>
+      <div class="mon v m2"><b>2</b><span>2560×1440</span></div>
+      <div class="mon v m3"><b>3</b><span>1920×1080</span></div>
+    </div>
+  </section>
+
+  <section class="cards">
+    <article class="card">
+      <h2><svg width="16" height="16" viewBox="0 -960 960 960"><path d="M334-120v-60h86v-100H140q-24 0-42-18t-18-42v-440q0-24 18-42t42-18h680q24 0 42 18t18 42v440q0 24-18 42t-42 18H540v100h86v60H334ZM140-340h680v-440H140v440Zm0 0v-440 440Z"/></svg><span data-i18n="c1">A sharp picture</span></h2>
+      <p data-i18n="c1p">Up to 4K at 60 frames per second, 10 bit. While the picture stands still, text and interface stay crisp; in motion the stream keeps within the cap set.</p>
+    </article>
+    <article class="card">
+      <h2><svg width="16" height="16" viewBox="0 -960 960 960"><path d="M220-80q-24.75 0-42.37-17.63Q160-115.25 160-140v-434q0-24.75 17.63-42.38Q195.25-634 220-634h70v-96q0-78.85 55.61-134.42Q401.21-920 480.11-920q78.89 0 134.39 55.58Q670-808.85 670-730v96h70q24.75 0 42.38 17.62Q800-598.75 800-574v434q0 24.75-17.62 42.37Q764.75-80 740-80H220Zm0-60h520v-434H220v434Zm314.5-162.03Q557-324.06 557-355q0-30-22.67-54.5t-54.5-24.5q-31.83 0-54.33 24.5t-22.5 55q0 30.5 22.67 52.5t54.5 22q31.83 0 54.33-22.03ZM350-634h260v-96q0-54.17-37.88-92.08-37.88-37.92-92-37.92T388-822.08q-38 37.91-38 92.08v96ZM220-140v-434 434Z"/></svg><span data-i18n="c2">Direct and encrypted</span></h2>
+      <p data-i18n="c2p">The video goes over your WireGuard or Tailscale network and never passes through the server. The stream is encrypted between the devices.</p>
+    </article>
+    <article class="card">
+      <h2><svg width="16" height="16" viewBox="0 -960 960 960"><path d="M300-200q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h440q24 0 42 18t18 42v560q0 24-18 42t-42 18H300Zm0-60h440v-560H300v560ZM180-80q-24 0-42-18t-18-42v-620h60v620h500v60H180Zm120-180v-560 560Z"/></svg><span data-i18n="c3">All you need to work</span></h2>
+      <p data-i18n="c3p">Keyboard and mouse, sound, a shared clipboard and files through Ctrl+C and Ctrl+V — both ways.</p>
+    </article>
+    <article class="card">
+      <h2><svg width="16" height="16" viewBox="0 -960 960 960"><path d="M80-327v-493q0-24.75 17.63-42.38Q115.25-880 140-880h574v60H140v493H80ZM448-80v-80H300q-24 0-42-18t-18-42v-440q0-24 18-42t42-18h560q24 0 42 18t18 42v440q0 24-18 42t-42 18H712v80H448ZM300-220h560v-440H300v440Zm280-220Z"/></svg><span data-i18n="c4">Up to three monitors</span></h2>
+      <p data-i18n="c4p">Real and virtual: all in one window, one at a time, or each in its own window on the client's monitors.</p>
+    </article>
+    <article class="card">
+      <h2><svg width="16" height="16" viewBox="0 -960 960 960"><path d="M170-120q-21 0-35.5-14.5T120-170v-200q0-21 14.5-35.5T170-420h620q21 0 35.5 14.5T840-370v200q0 21-14.5 35.5T790-120H170Zm10-60h600v-180H180v180Zm-10-360q-21 0-35.5-14.5T120-590v-200q0-21 14.5-35.5T170-840h620q21 0 35.5 14.5T840-790v200q0 21-14.5 35.5T790-540H170Zm10-60h600v-180H180v180Zm100 390h60v-120h-60v120Zm0-420h60v-120h-60v120Z"/></svg><span data-i18n="c5">Your own server, access under control</span></h2>
+      <p data-i18n="c5p">The server runs in Docker on your VPS or in your local network, with a web admin panel. The administrator approves the first connection to each machine; the apps update themselves from the server.</p>
+    </article>
+    <article class="card">
+      <h2><svg width="16" height="16" viewBox="0 -960 960 960"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-84 32-156.5T198-763l42 42q-47 46-73.5 108T140-480q0 141 99.5 240.5T480-140q142 0 241-99.5T820-480q0-71-26-133t-73-108l42-42q54 54 85.5 126.5T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm-30-360v-440h60v440h-60Z"/></svg><span data-i18n="c6">The host is always there</span></h2>
+      <p data-i18n="c6p">The host runs as a Windows service: you can connect even before anyone signs in. If you wish, the computer will not go to sleep.</p>
+    </article>
+  </section>
+
+  <dl class="needs">
+    <div><dt data-i18n="n1">System</dt><dd data-i18n="n1d">Windows 10 or 11, an NVIDIA graphics card</dd></div>
+    <div><dt data-i18n="n2">Installation</dt><dd data-i18n="n2d">One installer; host or client is chosen in it</dd></div>
+    <div><dt data-i18n="n3">Network</dt><dd data-i18n="n3d">WireGuard or Tailscale between the computers</dd></div>
+    <div><dt data-i18n="n4">Access</dt><dd data-i18n="n4d">Your administrator gives you the server's address and a token</dd></div>
+  </dl>
+  <p class="note" data-i18n="old">Upgrading from a version older than 0.7.0: on client computers, first remove the old Lumen (Settings → Apps), then install this one. After that, Lumen updates itself.</p>
+  <p class="note" data-i18n="unsigned">The installer is not digitally signed yet, so Windows may show a warning: "More info" → "Run anyway".</p>
+  <p class="note">SHA-256: <code>@SHA256@</code></p>
+</main>
+<footer><span>v@VERSION@</span></footer>
+<script>
+  // The page is written in English; Russian is here. The choice is this browser's, shared with the admin panel
+  // (the same site, the same key: web/admin/src/App.tsx).
+  const RU = {
+    title: "Lumen — open-source удалённый доступ к рабочим машинам для небольших студий и команд",
+    description: "Lumen — open-source удалённый доступ к рабочим машинам для небольших студий и команд: стабильная и комфортная работа, до 4K и 60 кадров в секунду, видео напрямую между компьютерами, свой сервер и доступ под контролем администратора.",
+    h1: "Удалённый доступ для небольших студий",
+    lead: "Lumen — с открытым исходным кодом. Подключайтесь к рабочему компьютеру из дома или из другого офиса и работайте как за ним: стабильно и комфортно, со звуком, буфером обмена и файлами. Видео идёт напрямую между компьютерами, а сервер у команды свой.",
+    download: "Скачать для Windows",
+    meta: "Версия @VERSION@ · @SIZE@ МБ",
+    c1: "Чёткая картинка",
+    c1p: "До 4K и 60 кадров в секунду, 10 бит. Пока изображение не движется, текст и интерфейс остаются резкими; в движении поток держится в заданном потолке.",
+    c2: "Напрямую и с шифрованием",
+    c2p: "Видео идёт по вашей сети WireGuard или Tailscale и через сервер не проходит. Поток зашифрован между устройствами.",
+    c3: "Всё нужное для работы",
+    c3p: "Клавиатура и мышь, звук, общий буфер обмена и файлы через Ctrl+C и Ctrl+V — в обе стороны.",
+    c4: "До трёх мониторов",
+    c4p: "Настоящие и виртуальные: все в одном окне, по одному или каждый в своём окне на мониторах клиента.",
+    c5: "Свой сервер и контроль доступа",
+    c5p: "Сервер ставится в Docker на ваш VPS или в локальной сети, с веб-админкой. Первое подключение к каждой машине одобряет администратор, программы обновляются с сервера сами.",
+    c6: "Хост всегда на связи",
+    c6p: "Хост работает как служба Windows: подключиться можно и до входа в систему. По желанию компьютер не будет засыпать.",
+    n1: "Система",
+    n1d: "Windows 10 или 11, видеокарта NVIDIA",
+    n2: "Установка",
+    n2d: "Один установщик, хост или клиент выбирается в нём",
+    n3: "Сеть",
+    n3d: "WireGuard или Tailscale между компьютерами",
+    n4: "Доступ",
+    n4d: "Адрес сервера и токен выдаёт ваш администратор",
+    old: "Переход с версии старше 0.7.0: на компьютерах с клиентом сначала удалите старый Lumen («Параметры → Приложения»), затем установите этот. Дальше Lumen обновляется сам.",
+    unsigned: "Установщик пока без цифровой подписи, поэтому Windows может показать предупреждение: «Подробнее» → «Выполнить в любом случае».",
+  };
+  const KEY = "lumen.lang";
+  const marked = [...document.querySelectorAll("[data-i18n]")];
+  const description = document.querySelector('meta[name="description"]');
+  const button = document.getElementById("lang-button");
+  const EN = Object.fromEntries(marked.map((e) => [e.dataset.i18n, e.textContent]));
+  Object.assign(EN, { title: document.title, description: description.content });
+  // The globe names the language a click switches to, each in its own words.
+  const OTHER = { en: "Русский", ru: "English" };
+  let shown = "en";
+
+  function show(lang) {
+    shown = lang;
+    const words = lang === "ru" ? RU : EN;
+    document.documentElement.lang = lang;
+    for (const e of marked) e.textContent = words[e.dataset.i18n];
+    document.title = words.title;
+    description.content = words.description;
+    button.title = OTHER[lang];
+    button.setAttribute("aria-label", OTHER[lang]);
+  }
+  button.addEventListener("click", () => {
+    const lang = shown === "ru" ? "en" : "ru";
+    try {
+      localStorage.setItem(KEY, lang);
+    } catch {}
+    show(lang);
+  });
+
+  let saved = null;
+  try {
+    saved = localStorage.getItem(KEY);
+  } catch {}
+  // `?lang=` in the address comes first (checks, a link to share), then the choice made here; nothing chosen yet:
+  // Russian for a browser whose own language is Russian, English for any other.
+  const asked = new URLSearchParams(location.search).get("lang");
+  const browser = /^ru\b/i.test(navigator.language || "") ? "ru" : "en";
+  show(asked === "ru" || asked === "en" ? asked : saved === "ru" || saved === "en" ? saved : browser);
+</script>
+</body>
+</html>

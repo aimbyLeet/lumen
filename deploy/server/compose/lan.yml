@@ -1,0 +1,35 @@
+# Lumen server in a local network, no domain (install.sh writes this file; settings: .env).
+#
+#   docker compose up -d          # start, and after editing .env
+#   docker compose logs -f        # logs
+#
+# Host network. The server's own certificate (data/tls: made once, devices
+# trust its key's fingerprint) serves signaling, the admin and the landing
+# page over HTTPS; plain HTTP is redirected there.
+
+name: lumen
+
+services:
+  server:
+    image: lumen-server:@VERSION@
+    container_name: lumen-server
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      LUMEN_MODE: lan
+      LUMEN_ADDRESS: ${LUMEN_ADDRESS:?set LUMEN_ADDRESS in .env}
+      LUMEN_SIGNAL_PORT: ${LUMEN_SIGNAL_PORT:-7443}
+      LUMEN_HTTPS_PORT: ${LUMEN_HTTPS_PORT:-443}
+      LUMEN_HTTP_PORT: ${LUMEN_HTTP_PORT:-80}
+      LUMEN_ADMIN_USER: ${LUMEN_ADMIN_USER:?set LUMEN_ADMIN_USER in .env}
+      LUMEN_ADMIN_PASSWORD: ${LUMEN_ADMIN_PASSWORD:?set LUMEN_ADMIN_PASSWORD in .env}
+    volumes:
+      # Devices, access, quality (lumen.db) and the key (tls/): survive updates.
+      - ./data:/data
+      # The landing page and the installer.
+      - ./site:/srv/site:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

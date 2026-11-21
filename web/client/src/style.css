@@ -1,0 +1,795 @@
+/* The hub's look: design/client/DESIGN.md. Colours and sizes live in tokens.css and here only. */
+@import "./tokens.css";
+@import "./components.css";
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+.selectable,
+.selectable * {
+  user-select: text;
+}
+h2,
+h3,
+p,
+ul,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+code,
+.mono {
+  font-family: var(--mono);
+}
+.icon {
+  flex: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* The window */
+.window {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.titlebar {
+  height: 34px;
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  background: var(--bg-lowest);
+  border-bottom: 1px solid var(--line-soft);
+}
+.titlebar-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.caption {
+  display: flex;
+}
+.caption button {
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+}
+.caption button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+.caption button.close:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+.tabs {
+  position: relative;
+  height: 44px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(19, 27, 46, 0.7);
+  border-bottom: 1px solid var(--line-soft);
+}
+.tabs button {
+  position: relative;
+  width: 48px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-2);
+}
+.tabs button:hover {
+  background: rgba(34, 42, 61, 0.6);
+  color: var(--text);
+}
+.tabs button.on {
+  background: var(--bg-high);
+  color: var(--accent);
+}
+/* The language at the bar's right edge: the tabs stay in the middle. */
+.tabs .lang-toggle {
+  position: absolute;
+  right: 12px;
+  width: 32px;
+  color: var(--text-3);
+}
+.tabs button.on::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+/* 24 px around the rows + 20 px inside them: text 44 px from the window's edge. The scrollbar's
+   place (8 px) is kept on both sides, part of the 24: the rows do not change width when it comes or goes. */
+main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  padding: 24px 16px;
+}
+.statusbar {
+  height: 26px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px;
+  background: var(--bg-lowest);
+  border-top: 1px solid var(--line-soft);
+  font: 12px var(--mono);
+  color: var(--text-3);
+}
+
+/* The server has a newer version (Update.tsx): the whole footer, yellow, is the button. */
+.statusbar.outdated {
+  position: relative;
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--accent);
+  border-radius: 0;
+  background: var(--accent);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+.statusbar.outdated:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.statusbar.outdated:disabled {
+  cursor: default;
+}
+.outdated-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* A screen */
+.view-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 20px 14px;
+  color: var(--accent);
+}
+.view-head h2 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--accent-soft);
+}
+.count {
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--bg-high);
+  font: 600 12px/18px var(--mono);
+}
+.rows {
+  border-top: 1px solid var(--line-soft);
+}
+/* One row height on every tab: only what is inside a row changes. */
+.rows > li {
+  height: 100px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 20px 14px;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-mid);
+}
+.banner.bad {
+  border-color: rgba(255, 180, 171, 0.4);
+  color: var(--bad);
+}
+
+/* A machine */
+.machine {
+  padding: 0 20px;
+}
+.machine:hover {
+  background: rgba(23, 31, 51, 0.5);
+}
+/* The outer columns are equal: the status stays in the middle of the row. */
+.machine-main {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 300px;
+  align-items: center;
+  gap: 16px;
+}
+.machine-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.machine-icon {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-lowest);
+  color: var(--text-3);
+}
+.machine-icon.on {
+  color: var(--accent);
+}
+.machine h3 {
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.machine.dim h3 {
+  color: var(--text-2);
+}
+.machine-facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: center;
+  font: 12px/18px var(--mono);
+  color: var(--text-3);
+}
+.machine-facts dd {
+  color: var(--text-2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.token {
+  max-width: 100%;
+  padding: 0 4px;
+  border: 1px solid var(--line-soft);
+  border-radius: 3px;
+  background: var(--bg-lowest);
+  color: var(--text-3);
+  font: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.token.on {
+  color: var(--accent);
+}
+.token:hover {
+  border-color: var(--accent);
+}
+.machine-status {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.machine-actions {
+  width: 268px;
+  justify-self: end;
+  display: flex;
+  gap: 8px;
+}
+.machine-actions .btn:first-child {
+  flex: 1;
+}
+.machine-actions .btn.half {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.square-space {
+  width: 34px;
+  flex: none;
+}
+.machine.add {
+  cursor: pointer;
+}
+.machine.add h3 {
+  color: var(--text-2);
+}
+.machine.add:hover h3 {
+  color: var(--accent-soft);
+}
+.machine.add p {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.btn.solid-danger {
+  background: var(--bad-fill);
+  border-color: var(--bad-fill);
+  color: #ffdad6;
+  font-weight: 600;
+}
+.btn.solid-danger:hover {
+  background: #b3121c !important;
+}
+.btn.plain {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-2);
+}
+.btn.dashed {
+  border-style: dashed;
+  background: var(--bg-low);
+  color: var(--text-2);
+}
+.machine.add:hover .btn.dashed {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.ghost-icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-3);
+}
+.ghost-icon:hover {
+  background: var(--bg-high);
+  color: var(--text);
+}
+
+/* Settings and help */
+.setting {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 268px;
+  align-items: center;
+  gap: 24px;
+  padding: 0 20px;
+}
+/* A title and at most three lines, narrow enough to keep the columns apart. */
+.setting-text {
+  max-width: 440px;
+}
+.setting:hover {
+  background: rgba(23, 31, 51, 0.5);
+}
+.setting h3 {
+  margin-bottom: 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.setting p {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-2);
+}
+.setting-control {
+  display: flex;
+  justify-content: center;
+}
+.setting-control input[type="text"],
+.setting-control select {
+  width: 100%;
+  text-align: center;
+  text-align-last: center;
+}
+.btn.wide {
+  width: 100%;
+}
+.by-server {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--wait) !important;
+}
+input[type="text"],
+select {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--bg-lowest);
+  color: var(--text);
+  font: 500 12px var(--mono);
+}
+input[type="text"]::placeholder {
+  color: var(--text-3);
+}
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+input[type="text"]:disabled,
+select:disabled {
+  color: var(--text-3);
+  background: var(--bg-low);
+}
+.field-error {
+  color: var(--bad) !important;
+}
+.keys {
+  white-space: nowrap;
+}
+.setting-control .keys {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  display: block;
+  cursor: pointer;
+}
+.toggle input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.toggle span {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--bg-high);
+  pointer-events: none;
+  transition: background 0.12s;
+}
+.toggle span::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-2);
+  transition: transform 0.12s;
+}
+.toggle input:checked + span {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.toggle input:checked + span::after {
+  transform: translateX(20px);
+  background: var(--accent-text);
+}
+.toggle input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Dialogs */
+/* Under the title bar: the window can still be moved and closed. */
+.scrim {
+  position: fixed;
+  inset: 34px 0 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(6, 14, 32, 0.8);
+}
+.dialog {
+  width: 100%;
+  max-width: 460px;
+  max-height: 100%;
+  overflow-y: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--bg-mid);
+}
+.dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 12px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.dialog h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-soft);
+  overflow-wrap: anywhere;
+}
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  line-height: 19px;
+}
+.dialog-body code {
+  overflow-wrap: anywhere;
+}
+.dialog > footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line);
+}
+.field {
+  display: block;
+  margin-bottom: 12px;
+}
+.field > span:first-child {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.field input,
+.field select {
+  width: 100%;
+}
+/* Fields side by side (the host's monitor: resolution and scale). */
+.field-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+/* A button inside a field, at its right edge: an eye held to see (the token, the admin's password), the cross that
+   clears the admin's name for a client. `.shown`: the eye is held. */
+.in-field {
+  position: relative;
+  display: block;
+}
+.in-field input {
+  width: 100%;
+  padding-right: 36px;
+}
+.in-field-button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0 2px 2px 0;
+  background: transparent;
+  color: var(--text-3);
+  touch-action: none;
+}
+.in-field-button:hover,
+.in-field.shown .in-field-button {
+  color: var(--accent);
+}
+/* A token field: the text is transparent, the mask with the same font lies over it; the eye shows the text. */
+.secret:not(.shown) input {
+  color: transparent;
+  caret-color: var(--text);
+}
+/* Selected text takes the selection's own colour: it must stay hidden under the mask too. */
+.secret:not(.shown) input::selection {
+  color: transparent;
+  background: rgba(250, 204, 21, 0.3);
+}
+.secret-mask {
+  position: absolute;
+  inset: 1px 36px 1px 11px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  font: 500 12px var(--mono);
+  color: var(--text);
+  white-space: pre;
+}
+.notice {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--bg-lowest);
+  font-size: 12px;
+  color: var(--text-2);
+}
+.notice .icon {
+  color: var(--accent);
+}
+.dialog-error {
+  font-size: 12px;
+  color: var(--bad);
+}
+/* A server's key (TrustDialog): two lines of eight groups, to compare by eye. */
+.fingerprint {
+  display: block;
+  padding: 8px 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--bg-lowest);
+  font: 500 13px/20px var(--mono);
+  letter-spacing: 0.04em;
+  word-spacing: 0.3em;
+  max-width: 34em;
+}
+
+/* The first start (Welcome): the whole window, a landing page — the app's mark on the left, the fields on the
+   right, over the dot grid of the server's landing page (deploy/server/site/index.html, .desk). */
+main.bare {
+  padding: 0;
+  scrollbar-gutter: auto;
+}
+.welcome {
+  position: relative;
+  min-height: 100%;
+  display: grid;
+  /* The mark at the left; the fields in the middle of the room between it and the window's right edge
+     (owner, 2026-11-09). */
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  padding: 40px 0 40px 64px;
+  background-color: var(--bg-lowest);
+  background-image: radial-gradient(rgba(219, 226, 253, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+/* Nothing moves when the language changes: the mark's column has one width, the form's texts one height. */
+.welcome-hero {
+  width: 300px;
+}
+.welcome-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.welcome-lang {
+  width: 32px;
+  height: 32px;
+  margin: -6px -8px -6px auto;
+}
+.welcome-hero img {
+  display: block;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  box-shadow: 0 0 48px rgba(250, 204, 21, 0.18);
+}
+.welcome-hero h1 {
+  margin: 0 0 8px;
+  font-size: 34px;
+  line-height: 42px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--accent-soft);
+}
+.welcome-hero p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--text-2);
+}
+.welcome-form {
+  justify-self: center;
+  width: 340px;
+  padding: 24px;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  background: var(--bg-low);
+}
+.welcome-form h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+}
+.welcome-intro {
+  min-height: 36px;
+  margin: 0 0 16px;
+  color: var(--text-2);
+}
+.welcome-form .field:last-of-type {
+  margin-bottom: 8px;
+}
+.welcome-form .btn.wide {
+  height: 36px;
+  margin-top: 12px;
+}
+/* A card's line of words (Lumen Host's cards, both welcome pages: what the server says). */
+.card-text {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-2);
+}
+/* No message yet: the line stays, so the card does not change its height. */
+.card-empty {
+  min-height: 18px;
+}
+/* A quiet note with a lock (Lumen Host: what cannot be changed while registered). */
+.card-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-3);
+}
+.one-line {
+  min-height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.welcome-later {
+  min-height: 51px;
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-3);
+}

@@ -1,0 +1,17 @@
+[package]
+name = "lumen-netsim"
+description = "Sends a recorded HEVC stream through the transport over loopback with an emulated link"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-netsim"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+decoder.workspace = true
+protocol.workspace = true
+transport.workspace = true

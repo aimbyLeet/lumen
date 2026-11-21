@@ -1,0 +1,19 @@
+[package]
+name = "lumen-compare"
+description = "Colour accuracy analysis: 4:2:0 and codec loss in CIEDE2000 / PSNR"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-compare"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+capture.workspace = true
+clap.workspace = true
+color.workspace = true
+png.workspace = true
+serde.workspace = true
+serde_json.workspace = true

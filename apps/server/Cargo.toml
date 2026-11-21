@@ -1,0 +1,28 @@
+[package]
+name = "lumen-server"
+description = "Lumen server: devices, access, sessions (signaling over TLS)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-server"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+blake2.workspace = true
+clap.workspace = true
+httparse.workspace = true
+protocol.workspace = true
+rcgen.workspace = true
+ring.workspace = true
+rusqlite.workspace = true
+rustls.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+signal.workspace = true
+rustls.workspace = true
+serde_json.workspace = true

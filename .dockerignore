@@ -1,0 +1,13 @@
+/target
+bench-out*
+/dist
+.git
+.idea
+.vscode
+.claude
+**/node_modules
+web/*/dist
+# The image builds with its own compiler (the FROM tag in deploy/server/Dockerfile).
+# With this file rustup would fetch the newest "stable" and the Windows target on
+# every build (minutes, and another compiler than the tag says).
+rust-toolchain.toml

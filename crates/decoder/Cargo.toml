@@ -1,0 +1,18 @@
+[package]
+name = "decoder"
+description = "HEVC Main10 decoding on NVDEC with output to D3D11 textures (CUDA interop)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+color.workspace = true
+gpu-convert.workspace = true
+nvdec-sys.workspace = true
+windows.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

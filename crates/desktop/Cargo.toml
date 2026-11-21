@@ -1,0 +1,18 @@
+[package]
+name = "desktop"
+description = "What the Lumen desktop apps share: the user's data folder, the log file, network interfaces (Windows)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+protocol.workspace = true
+ring.workspace = true
+transport.workspace = true
+vdd.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+windows.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

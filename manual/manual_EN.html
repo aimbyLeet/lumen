@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumen manual</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0;
+    --code-bg: #f1f1ee; --accent: #2457c5; --warn-bg: #fff6e0; --warn-line: #e8b44a;
+    --note-bg: #eef3fd; --note-line: #9db5ea; --quick-bg: #f0f7ef; --quick-line: #7fb877;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a; --fg: #e6e6e3; --muted: #a0a3a8; --line: #2f3134;
+      --code-bg: #222427; --accent: #8fb0ff; --warn-bg: #2e2716; --warn-line: #9c7a2c;
+      --note-bg: #1b2333; --note-line: #3d5487; --quick-bg: #19261a; --quick-line: #4c7d47;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; }
+  h2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+  p, li { max-width: 72ch; }
+  a { color: var(--accent); }
+  .lead { color: var(--muted); margin-top: 0; }
+  .lang-switch { float: right; margin-top: 8px; font-size: 0.95em; }
+  code, pre { font-family: Consolas, "Cascadia Mono", monospace; font-size: 0.92em; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  pre {
+    background: var(--code-bg); padding: 12px 14px; border-radius: 6px;
+    overflow-x: auto; line-height: 1.45;
+  }
+  pre code { background: none; padding: 0; }
+  .note, .warn { padding: 10px 14px; border-radius: 6px; border-left: 4px solid; margin: 16px 0; }
+  .note { background: var(--note-bg); border-color: var(--note-line); }
+  .warn { background: var(--warn-bg); border-color: var(--warn-line); }
+  .quick { background: var(--quick-bg); border: 1px solid var(--quick-line); border-radius: 8px; padding: 4px 18px 12px; margin: 24px 0; }
+  .quick h2 { border-top: 0; margin-top: 12px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.95em; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .table-wrap { overflow-x: auto; }
+  nav { border: 1px solid var(--line); border-radius: 8px; padding: 8px 16px; margin: 24px 0; }
+  nav > ol { columns: 2; column-gap: 32px; padding-left: 20px; }
+  nav ol ol { padding-left: 18px; font-size: 0.92em; }
+  nav li { break-inside: avoid; }
+  @media (max-width: 600px) { nav > ol { columns: 1; } }
+</style>
+</head>
+<body>
+<main>
+
+<a class="lang-switch" href="manual_RU.html" hreflang="ru">Russian version</a>
+<h1>Lumen</h1>
+<p class="lead">The manual: what Lumen is, how to install the server, the host and the client, and how to keep them
+running. For Lumen 0.9.0 and later.</p>
+
+<nav aria-label="Contents">
+<ol>
+  <li><a href="#about">What Lumen is and how it works</a></li>
+  <li><a href="#quick-start">Quick start: server installation</a></li>
+  <li><a href="#requirements">Requirements</a></li>
+  <li><a href="#network">Network: WireGuard or Tailscale</a></li>
+  <li><a href="#server">Server</a>
+    <ol>
+      <li><a href="#server-choose">Which option to choose</a></li>
+      <li><a href="#server-domain">A VPS with a domain</a></li>
+      <li><a href="#server-lan">A local network</a></li>
+      <li><a href="#server-ports">Ports</a></li>
+      <li><a href="#server-flags">Without questions</a></li>
+    </ol></li>
+  <li><a href="#server-files">What lives where on the server</a></li>
+  <li><a href="#admin">Admin panel</a></li>
+  <li><a href="#host">Host: Lumen Host</a>
+    <ol>
+      <li><a href="#host-install">Installation</a></li>
+      <li><a href="#host-register">Registration</a></li>
+      <li><a href="#host-work">Day-to-day work</a></li>
+      <li><a href="#monitors">Virtual monitors</a></li>
+      <li><a href="#headless">A computer without a monitor</a></li>
+    </ol></li>
+  <li><a href="#client">Client: Lumen Client</a>
+    <ol>
+      <li><a href="#client-install">Installation</a></li>
+      <li><a href="#client-machines">Machines</a></li>
+      <li><a href="#client-window">The video window</a></li>
+      <li><a href="#client-clipboard">Clipboard and files</a></li>
+      <li><a href="#client-sound">Sound</a></li>
+      <li><a href="#client-overlay">Overlay</a></li>
+      <li><a href="#client-status">Machine status</a></li>
+      <li><a href="#client-settings">Settings</a></li>
+    </ol></li>
+  <li><a href="#first">First connection, step by step</a></li>
+  <li><a href="#many">Deploying to many machines</a></li>
+  <li><a href="#app-data">Where the apps keep their data</a></li>
+  <li><a href="#updates">Updates</a></li>
+  <li><a href="#maintenance">Server maintenance</a>
+    <ol>
+      <li><a href="#maint-status">Status</a></li>
+      <li><a href="#maint-update">Update</a></li>
+      <li><a href="#maint-settings">Changing settings</a></li>
+      <li><a href="#maint-commands">Commands without the browser</a></li>
+      <li><a href="#maint-remove">Removal</a></li>
+    </ol></li>
+  <li><a href="#trouble">Troubleshooting</a>
+    <ol>
+      <li><a href="#trouble-server">Server installation</a></li>
+      <li><a href="#trouble-apps">Lumen Host and Lumen Client</a></li>
+    </ol></li>
+</ol>
+</nav>
+
+<h2 id="about">1. What Lumen is and how it works</h2>
+<p>Lumen is open source remote access to work machines for small studios and teams. You connect to your work computer
+(the <b>host</b>) from home or another office (the <b>client</b>) and work as if you sat at it: steadily and
+comfortably, with sound, a shared clipboard, files and up to three monitors, up to 4K at 60 frames per second. The team
+has its own server, and the programs update themselves from it.</p>
+<div class="table-wrap">
+<table>
+  <tr><th>Part</th><th>Where</th><th>What it does</th></tr>
+  <tr><td><b>Server</b></td><td>a VPS (Docker) or a machine in the local network</td>
+      <td>Introduces hosts and clients to each other, keeps who may connect to which machine, makes sure one client at a
+      time is connected to a machine. Web admin panel, a download page with the installer, updates for the programs.
+      <b>Video never goes through the server.</b></td></tr>
+  <tr><td><b>Lumen Host</b></td><td>the work computer with an NVIDIA card</td>
+      <td>A Windows service: registers the machine on the server, shows the machine's token, sends the screen and
+      sound, takes the mouse and keyboard. The Lumen Host window lives in the tray.</td></tr>
+  <tr><td><b>Lumen Client</b></td><td>the user's computer with an NVIDIA card</td>
+      <td>The organisation's server (one), the list of machines added by token, the video window.</td></tr>
+  <tr><td><b>Network</b></td><td>your WireGuard or Tailscale</td>
+      <td>The client connects to the host directly, by its address in this network.</td></tr>
+</table>
+</div>
+<p><b>Access.</b> The host shows a <b>token</b>, the user enters it in the client, the server creates a
+<b>request</b>, and the administrator <b>approves</b> it in the admin panel; after that the client can connect. Knowing
+the token without the approval is not enough, and the server cannot connect without the token either: the token takes
+part in the encryption (Noise <code>IKpsk2</code>, end to end between the client and the host) and is never sent to the
+server. Devices talk to the server over TLS.</p>
+<p><b>A session.</b> The client asks the server to connect; the server tells the host who is coming and gives the client
+the host's addresses; the client tries them and talks to the host directly (UDP). The picture is HEVC Main10 compressed
+by NVENC on the host and decoded by NVDEC on the client.</p>
+<p><b>Downloads</b> — <a href="https://github.com/aimbyLeet/lumen/releases">GitHub Releases</a>:</p>
+<ul>
+  <li><code>lumen-setup-&lt;version&gt;.exe</code> — the one installer for Windows; host or client is chosen while
+  installing. The host option includes the virtual monitor driver
+  <a href="https://github.com/aimbyLeet/lumen-vdd">Lumen VDD</a>.</li>
+  <li><code>lumen-server-&lt;version&gt;.tar.gz</code> — the server: its Docker image, <code>install.sh</code>, the
+  download page and the installer of the same version (devices update to it).</li>
+</ul>
+
+<section class="quick">
+<h2 id="quick-start">2. Quick start: server installation</h2>
+<p>About 10 minutes. You need a server with Ubuntu 22.04 or 24.04 (x86_64) and root access over SSH; for a VPS also
+a domain whose DNS A record points to the server. The details are in <a href="#server">section 5</a>.</p>
+
+<h3 id="qs-download">Step 1. Upload the archive</h3>
+<p>Download <code>lumen-server-&lt;version&gt;.tar.gz</code> from
+<a href="https://github.com/aimbyLeet/lumen/releases">GitHub Releases</a> and put it into <code>/tmp</code> on the
+server: with <code>scp</code> as below, or with any SFTP client (WinSCP, FileZilla).</p>
+<pre><code>scp lumen-server-0.9.0.tar.gz root@203.0.113.10:/tmp/</code></pre>
+
+<h3 id="qs-run">Step 2. Unpack and start the script</h3>
+<p>In the server's terminal:</p>
+<pre><code>cd /tmp
+tar xzf lumen-server-0.9.0.tar.gz
+sudo bash lumen-server-0.9.0/install.sh</code></pre>
+<p>The script speaks the system's language (usually English); <code>--lang ru</code> or <code>--lang en</code> chooses it
+explicitly.</p>
+
+<h3 id="qs-menu">Step 3. Choose a menu item</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Item</th><th>When</th><th>What it asks</th></tr>
+  <tr><td><b>1) Install on a clean VPS (domain, nginx, Let's Encrypt)</b></td><td>a new VPS with nothing on it</td>
+      <td>the domain (its A record already points here), an e-mail for Let's Encrypt (Enter: none), the admin's login
+      and password</td></tr>
+  <tr><td><b>2) Install on a VPS that has nginx and other sites</b></td><td>nginx already serves other sites</td>
+      <td>the same; other sites are not touched</td></tr>
+  <tr><td><b>3) Install in a local network (by IP, no domain)</b></td><td>a server in the office or in a VPN</td>
+      <td>the address devices use (the machine's IP is offered), the admin's login and password</td></tr>
+  <tr><td><b>4) Update</b></td><td>the Lumen server is already installed here</td>
+      <td>nothing: offered by default (just Enter); the database, the settings and the admin's password stay</td></tr>
+  <tr><td>5) Status, 6) Remove, 0) Exit</td><td>see <a href="#maintenance">section 14</a></td><td></td></tr>
+</table>
+</div>
+<p>The admin's password may be left empty (Enter): the script generates one and prints it at the end — <b>save it</b>.
+At the end the script prints the admin panel's address, the download page, the server's address for the programs and,
+in a local network, the certificate's <b>fingerprint</b>.</p>
+<div class="note"><b>The provider's firewall.</b> The script opens the ports in <code>ufw</code> by itself, but it does
+not see a firewall in the VPS provider's panel: open TCP 80, 443 and 7443 there.</div>
+
+<h3 id="qs-after">Step 4. Check and clean up</h3>
+<pre><code>sudo /opt/lumen-server/install.sh --mode status
+rm -rf /tmp/lumen-server-0.9.0 /tmp/lumen-server-0.9.0.tar.gz</code></pre>
+<p>“Status” shows the version, whether the container runs, the addresses, the certificate's expiry (or the
+fingerprint) and the end of the log. The archive is not needed any more: the script copied itself to
+<code>/opt/lumen-server</code>. Next: the admin panel (<a href="#admin">section 7</a>), the host
+(<a href="#host">section 8</a>) and the client (<a href="#client">section 9</a>), or straight to the
+<a href="#first">first connection</a>.</p>
+</section>
+
+<h2 id="requirements">3. Requirements</h2>
+<ul>
+  <li><b>Server</b>: Ubuntu 22.04 or 24.04, x86_64, root over SSH. On a VPS: a public IPv4 address and a <b>domain</b>
+  (for example <code>lumen.example.com</code>) with an A record pointing to it, for the Let's Encrypt certificate; nginx
+  may already serve other sites. In a local network: an IP that the devices reach. Video does not go through the
+  server: 1 vCPU and 1 GB of RAM are enough (unless the same VPS is also the WireGuard server the video goes through,
+  see <a href="#network">section 4</a>). Docker is installed by the script (<code>docker.io</code> from Ubuntu's
+  repository); an installed Docker is used as it is.</li>
+  <li><b>A WireGuard or Tailscale network</b> in which the client reaches the host by IP (<a href="#network">section 4</a>).</li>
+  <li><b>Host and client</b>: Windows 10 or 11 (64-bit), an NVIDIA graphics card (GTX 10xx or newer), NVIDIA driver
+  570 or newer (NVENC API 13.0). Administrator rights for installing the host; the client installs without them. The
+  installer adds the WebView2 runtime if Windows lacks it (this needs the internet).</li>
+  <li><b>The client's connection</b>: from 100 Mbit/s. The stream stays under its cap: 4K at 60 Hz takes up to about
+  40 Mbit/s.</li>
+</ul>
+
+<h2 id="network">4. Network: WireGuard or Tailscale</h2>
+<p>Lumen does not traverse NAT and does not relay video through its server: the client connects to the host directly,
+so they need a shared network in which the host is reachable by IP. WireGuard gives it (or Tailscale, which is
+WireGuard set up for you). Where to put the WireGuard server:</p>
+<ul>
+  <li><b>In the office</b> (the office router has a public IP and forwards the WireGuard port): clients at home join
+  the office network. Video goes directly, the latency is lowest.</li>
+  <li><b>On a VPS</b> (the office has no public IP): hosts and clients connect to the VPS. Video goes through the VPS:
+  its bandwidth must carry all sessions' streams in each direction, and the trip to the VPS adds to the latency.</li>
+  <li><b>Tailscale</b>: install it on the hosts and the clients and sign in to one network; the addresses are
+  <code>100.x.y.z</code>.</li>
+</ul>
+<p>The host's address is not entered anywhere: the host reports all its addresses to the server, the client tries them
+and connects to the one that answers. To check the network, ping the host's address in the WireGuard network from the
+client: <code>ping &lt;host address&gt;</code>.</p>
+<p>The host needs inbound <b>UDP 9000–9009</b>: the installer opens it in Windows Firewall for every network profile
+(Windows often treats WireGuard and Tailscale adapters as “public”).</p>
+<div class="warn"><b>Other VPNs.</b> A VPN with a TUN adapter (Happ, v2rayN, Hiddify, NekoBox and the like in TUN or
+“all traffic” mode) takes all routes, and Lumen's packets go into its tunnel instead of WireGuard or Tailscale. It looks
+like this: both programs say they are on the server, but the video window does not open. <b>Exclusions in that VPN</b>
+(excluded subnets, per-app rules) usually <b>do not help</b> in TUN mode: the traffic still enters its adapter, the
+VPN resends it itself, and that does not work for video.
+<ul>
+  <li>The <b>host</b> gets around such a VPN by itself: it answers the client through the network adapter the
+  client's request came in on. For that the adapter needs its own gateway (the office network or the WireGuard
+  adapter).</li>
+  <li>The <b>client</b> reaches the host by Windows' routes. If WireGuard or Tailscale runs on the client itself, it has
+  its own route to the host's network, and the other VPN does not interfere.</li>
+  <li>If it still does not work, turn that VPN off, or add a Windows route to the other side's subnet through the
+  WireGuard network's gateway (PowerShell as administrator; a Windows route is more specific than the VPN's and wins):</li>
+</ul>
+<pre><code>route -p add 192.168.50.0 mask 255.255.255.0 10.8.0.1</code></pre>
+Both subnets (as <code>192.168.50.0/24</code>) are in Lumen Client's log: Settings → Log → “Open folder”, the latest
+<code>client-…log</code>, the <code>session:</code> lines. On a connection they are <code>host_net</code> and
+<code>client_net</code>; if the host does not answer (<code>unreachable</code>) — <code>host_nets</code>,
+<code>client_nets</code> and <code>routes</code>: the adapter that traffic to each of the host's addresses goes
+through right now.</div>
+
+<h2 id="server">5. Server</h2>
+<p>The server runs in Docker and is installed by <code>install.sh</code> from the archive
+<code>lumen-server-&lt;version&gt;.tar.gz</code> (<a href="#quick-start">section 2</a>). The script installs, updates,
+shows the status and removes; the same without questions — <code>install.sh --help</code>.</p>
+
+<h3 id="server-choose">5.1. Which option to choose</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Menu item</th><th>When</th><th>What it needs</th></tr>
+  <tr><td><b>1. A clean VPS</b></td><td>a new server, nothing on it</td>
+      <td>a domain (A record to the server's IP), free ports 80, 443, 7443</td></tr>
+  <tr><td><b>2. A VPS with nginx</b></td><td>nginx already serves other sites</td>
+      <td>a (sub)domain no other site uses, a free port 7443; other sites are not touched</td></tr>
+  <tr><td><b>3. A local network</b></td><td>a server in the office or in a VPN, no domain</td>
+      <td>the server's IP that devices reach; ports 443, 80, 7443 (if taken, the script offers others)</td></tr>
+</table>
+</div>
+<p>For every option: root access over SSH and an x86_64 processor. The script checks that it runs on Ubuntu 22.04 or
+24.04 (anything else: it asks whether to go on) and installs <code>curl</code>, <code>openssl</code> and
+<code>iproute2</code> if a minimal system lacks them.</p>
+
+<h3 id="server-domain">5.2. A VPS with a domain (items 1 and 2)</h3>
+<p><b>DNS first.</b> In the domain's panel create an A record <code>lumen.example.com</code> →
+<code>203.0.113.10</code> and wait a few minutes. To check:</p>
+<pre><code>getent hosts lumen.example.com</code></pre>
+<p>The script asks for the domain, an e-mail for Let's Encrypt (may be skipped) and the admin's login and password.
+Then it:</p>
+<ul>
+  <li>installs Docker, nginx (item 1) and certbot;</li>
+  <li>adds <b>one site of its own</b> to nginx for the domain: first a temporary one for Let's Encrypt's check, then the
+  full one — HTTPS, the download page at <code>/</code>, <code>/admin/</code> proxied to the admin panel. Before that it
+  checks that nginx's config is valid and that no other site serves the domain; if nginx does not accept the new
+  config, the old one comes back;</li>
+  <li>gets the certificate (<code>certbot certonly --webroot</code>, nginx's configs are not edited by certbot);
+  certbot's timer renews it, and the Lumen server picks up the renewed certificate by itself;</li>
+  <li>opens ports 80, 443, 7443 in <code>ufw</code> if it is on. A firewall in the provider's panel must be opened by
+  hand (TCP 80, 443, 7443).</li>
+</ul>
+<p>If item 1 finds nginx already installed, it goes on as item 2.</p>
+<pre><code>HTTPS :443 ──▶ nginx (other sites + lumen.example.com)
+                 ├─ /         /var/www/lumen.example.com  (download page, installer)
+                 └─ /admin/   http://127.0.0.1:7480       (admin panel)
+Lumen Host / Lumen Client ──TLS :7443──▶ lumen-server (Docker) ── /opt/lumen-server/data</code></pre>
+<p>In the programs the server is the <b>domain</b> (<code>lumen.example.com</code>), not the IP: the certificate is
+issued for the domain.</p>
+
+<h3 id="server-lan">5.3. A local network (item 3)</h3>
+<p>Without a domain there is no public certificate, so the server makes <b>its own</b> — for its address, valid for
+100 years. The key is made once and kept in <code>/opt/lumen-server/data/tls</code>; updates do not change it.</p>
+<p>The script asks for the address devices use to reach the server (it offers the machine's IP; several are allowed,
+comma-separated, names too) and for the admin's login and password. If ports 443, 80 or 7443 are taken, it offers
+others (8443, 8080 or <code>off</code> for HTTP, 7444).</p>
+<pre><code>HTTPS :443 ──▶ lumen-server: download page at /, admin panel at /admin/   (HTTP :80 → HTTPS)
+Lumen Host / Lumen Client ──TLS :7443──▶ lumen-server (Docker) ── /opt/lumen-server/data</code></pre>
+<div class="note"><b>Fingerprint.</b> At the end the script prints the certificate's fingerprint: 16 groups of 4
+characters. Lumen Host and Lumen Client show it on the first connection and ask whether to trust the server: check that
+it matches. After that the programs check the key themselves; if it changes (the server was reinstalled with its data
+deleted — or it is not your server), they refuse to connect and ask again.</div>
+<p>Trust by fingerprint is offered only for a local address: an IP address, a name without dots, or a name ending in
+<code>.lan</code>, <code>.local</code>, <code>.internal</code>, <code>.home.arpa</code> or <code>.localdomain</code>.
+For a public domain, use items 1–2 with Let's Encrypt.</p>
+<div class="warn"><b>The browser</b> warns once, when opening the admin panel, that the certificate is not trusted.
+That is expected: the certificate is the server's own. Choose “Advanced” → “Continue to the site”.</div>
+
+<h3 id="server-ports">5.4. Ports</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Port</th><th>Who listens</th><th>What for</th></tr>
+  <tr><td><code>80/tcp</code>, <code>443/tcp</code></td><td>nginx (domain) or lumen-server (local network)</td>
+      <td>the download page (<code>/</code>) and the admin panel (<code>/admin/</code>) over HTTPS; 80 is Let's
+      Encrypt's check or the redirect to HTTPS</td></tr>
+  <tr><td><code>7443/tcp</code></td><td>lumen-server, open to the outside</td><td>hosts and clients (TLS signaling)</td></tr>
+  <tr><td><code>7480/tcp</code></td><td>lumen-server, <code>127.0.0.1</code> only (domain)</td><td>the admin panel for nginx (plain HTTP)</td></tr>
+  <tr><td><code>9000–9009/udp</code></td><td>Lumen Host on the work computer</td><td>video, sound and input between client and host (not the server)</td></tr>
+</table>
+</div>
+<p>In the programs the port is written only if it is not 7443: <code>address:port</code>.</p>
+
+<h3 id="server-flags">5.5. Without questions</h3>
+<p>Everything the menu does, as flags (<code>install.sh --help</code> lists them):</p>
+<pre><code>sudo ./install.sh --mode clean --domain lumen.example.com --email admin@example.com --yes
+sudo ./install.sh --mode nginx --domain lumen.example.com --yes
+sudo ./install.sh --mode lan --address 192.168.1.20 --admin-password 'Secret-2026' --yes
+sudo ./install.sh --mode update --yes
+sudo ./install.sh --mode remove --keep-data --yes</code></pre>
+<p>Without <code>--admin-password</code> a password is generated and printed at the end; <code>--admin-user</code> sets
+the login (default <code>admin</code>). The password: at least 8 characters, no spaces and none of
+<code>$ ` ' " \ #</code>. <code>--yes</code> takes the defaults everywhere and needs <code>--mode</code>.</p>
+
+<h2 id="server-files">6. What lives where on the server</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>What</th><th>Where</th></tr>
+  <tr><td>The server's folder</td><td><code>/opt/lumen-server</code></td></tr>
+  <tr><td>Settings: mode, domain or addresses, ports, the admin's login and password, the ufw rules opened by the
+      script (for removal); readable by root only</td><td><code>/opt/lumen-server/.env</code></td></tr>
+  <tr><td>The Docker Compose file (a copy of <code>compose/public.yml</code> or <code>compose/lan.yml</code> from the
+      archive)</td><td><code>/opt/lumen-server/docker-compose.yml</code></td></tr>
+  <tr><td>The script itself (status, update, removal without the archive)</td><td><code>/opt/lumen-server/install.sh</code></td></tr>
+  <tr><td>The database: devices, access, quality settings</td><td><code>/opt/lumen-server/data/lumen.db</code>
+      (<code>/data/lumen.db</code> in the container)</td></tr>
+  <tr><td>The server's own key and certificate (local network)</td><td><code>/opt/lumen-server/data/tls</code>
+      (<code>key.pem</code>, <code>cert.pem</code>)</td></tr>
+  <tr><td>The download page and installer (local network)</td><td><code>/opt/lumen-server/site</code></td></tr>
+  <tr><td>The download page and installer (domain)</td><td><code>/var/www/lumen.example.com</code></td></tr>
+  <tr><td>The nginx site (domain); the first line is <code># Lumen server (install.sh)</code></td>
+      <td><code>/etc/nginx/sites-available/lumen.example.com</code> and a link in <code>sites-enabled</code>
+      (or <code>/etc/nginx/conf.d/lumen.example.com.conf</code>)</td></tr>
+  <tr><td>The certificate (domain), renewed by certbot; mounted into the container read-only</td>
+      <td><code>/etc/letsencrypt/live/lumen.example.com</code></td></tr>
+  <tr><td>Docker: the image <code>lumen-server:&lt;version&gt;</code>, the container <code>lumen-server</code>
+      (Compose project <code>lumen</code>, host network, restarts unless stopped)</td>
+      <td><code>docker ps</code>, <code>docker image ls lumen-server</code></td></tr>
+  <tr><td>The server's log (Docker keeps up to 3 files of 10 MB)</td><td><code>docker logs lumen-server</code></td></tr>
+  <tr><td>Inside the image: the program, the admin panel, the installer devices update to</td>
+      <td><code>/usr/local/bin/lumen-server</code>, <code>/usr/share/lumen/admin</code>,
+      <code>/usr/share/lumen/update</code></td></tr>
+</table>
+</div>
+<p>There are no backups: to keep the devices and access, copy <code>/opt/lumen-server/data</code> and
+<code>.env</code> yourself if you need to.</p>
+
+<h2 id="admin">7. Admin panel</h2>
+<p>Open <code>https://lumen.example.com/admin/</code> (in a local network <code>https://192.168.1.20/admin/</code>) and
+sign in with the login and password from <code>.env</code> (after 5 wrong passwords, sign-in from that address is
+blocked for a minute). It works on a phone too. The tabs are icons at the top; the line at the top shows the sessions
+and how many clients and machines are online.</p>
+<ul>
+  <li><b>Requests</b> — a block above the lists on the Clients and Machines tabs; it shows up when there are requests
+  (their number is on the Clients icon). A client asked for access to a machine for the first time: “Approve” or
+  “Reject”. A rejected client cannot ask for that machine again until you press “Lift the ban” in its connections.</li>
+  <li><b>Clients</b> — alphabetically, under the name the client gave itself in Lumen Client. The administrator can
+  give a client a name of their own (the pencil “Name the client” in the expanded block, Latin letters only); it is
+  seen only in the admin panel. A collapsed block shows the name and status: session (yellow), online (green), offline
+  (grey). A click expands it:
+    <ul>
+      <li>the state: who the session is with, at what frame rate and cap, or when the client was last seen;</li>
+      <li><b>settings</b> of this client: frame rate, bitrate cap, file transfer; what is set for this client is
+      highlighted;</li>
+      <li><b>connections</b>: the client's machines; each access (a “client → machine” pair) has an ID like
+      <code>3-7</code> (client and machine numbers). “Unlink” removes the access and at once cuts off a session in
+      progress — after that the client needs a new request; “Unlink from all” is for an employee who has left. A row's
+      status: request, rejected, busy (another client is connected), version (the Lumen versions differ, no connection
+      is possible);</li>
+      <li>“Remove” — the client's record with all its access.</li>
+    </ul>
+  </li>
+  <li><b>Machines</b> — the same from the other side: all machines alphabetically, in a block the clients with access;
+  “Remove” deletes the machine's registration. While a host installs a new version, the machine shows “Installing a
+  newer Lumen…”; if it fails — “The update failed” with the reason (<a href="#updates">section 13</a>).</li>
+  <li><b>Settings</b> — for all clients at once: frame rate, bitrate cap, file transfer, and the file speed cap
+  (default 100 Mbit/s, 1 to 1000, for each side of a session).</li>
+</ul>
+<p><b>Frame rate and cap are set independently:</b> you can limit only the frame rate, only the cap, or both. What is
+set, the client cannot change (the field is locked in Lumen Client); the rest it chooses itself. A client's own
+setting comes before the general one, field by field. They take effect from the next connection. The client's <b>file
+transfer switch</b> also comes before the general one and takes effect at once: turned off during a session, the
+transfers in progress are cut off. Text and pictures in the clipboard are not affected.</p>
+<p>The search at the top (“Find a client or a machine”) is shared by both tabs; a block found by a name inside it
+expands by itself.</p>
+
+<h2 id="host">8. Host: Lumen Host</h2>
+
+<h3 id="host-install">8.1. Installation</h3>
+<p>Run <code>lumen-setup-&lt;version&gt;.exe</code>, choose the language and then “Host” (the setup restarts itself with
+administrator rights: Windows asks). Installed into <code>C:\Program Files\Lumen</code>:</p>
+<ul>
+  <li>the <b>Windows service “Lumen Host”</b>: it runs from power-on, also on the sign-in and lock screens, in UAC
+  prompts and in programs run as administrator;</li>
+  <li>Lumen Host, the window for its settings (its tray icon starts at every user's sign-in), and a desktop
+  shortcut;</li>
+  <li>a Windows Firewall rule “Lumen Host (UDP)” for UDP 9000–9009, all profiles;</li>
+  <li>the policy that lets services send Ctrl+Alt+Del (<code>SoftwareSASGeneration</code>), for Ctrl+Alt+Del from a
+  client;</li>
+  <li>optionally, the virtual monitor driver <a href="https://github.com/aimbyLeet/lumen-vdd">Lumen VDD</a>: the task
+  “Virtual monitors (Lumen VDD driver)”, unchecked by default (<a href="#monitors">8.4</a>).</li>
+</ul>
+<p>The host is installed for the whole computer: Lumen Host is the same in every Windows account of this machine, the
+registration and the token belong to the machine. New versions the host installs from the server by itself
+(<a href="#updates">section 13</a>); the same installer run over an installed one also works: the registration and the
+token stay.</p>
+<div class="note"><b>Versions.</b> A client connects only to a host of <b>the same version</b> of Lumen (the version is
+at the bottom of the Lumen Host and Lumen Client windows, and for every device in the admin panel, at the bottom of its
+block). You do not need to watch it: a newer client updates the host when it connects (<a href="#updates">section 13</a>).</div>
+
+<h3 id="host-register">8.2. Registration</h3>
+<ol>
+  <li>Open Lumen Host (the desktop shortcut). The first time it shows “Welcome”.</li>
+  <li>Enter the <b>server</b>: the domain (<code>lumen.example.com</code>; port 7443 is implied) or, in a local network,
+  the IP. The <b>machine name</b> is filled in (the computer's name): before registering you can change it — that is how
+  the administrator and the users see the machine. Latin letters, digits and signs only, up to 64 characters; if the
+  computer's name is in Cyrillic, the field is empty.</li>
+  <li>Press <b>“Register”</b>. The button is active when the server answers (above it — that the server is reachable,
+  or why not: Lumen Host checks the server every 3 seconds). In a local network Lumen Host first shows the server's
+  fingerprint (<a href="#server-lan">5.3</a>). The status becomes “Online”, and the <b>machine's token</b> appears:
+  <code>XXXX-XXXX-XXXX-XXXX-XXXX-XXXX</code>.</li>
+  <li>Give the token to those who will connect (the “Copy” button). It can be seen at any time, from any account of
+  this machine, on the Machine tab.</li>
+</ol>
+<p><b>“Change the token”</b> (the circular arrow next to the token) — if the token got to the wrong people: the old
+token no longer connects to the machine, every user has to enter the new one (no new approval is needed).</p>
+<p><b>“Remove registration”</b> — the host stops working: if the server is reachable, the machine's record is removed
+there too (with the clients' access). If the server is unreachable, the administrator removes the record in the admin
+panel. <b>The token stays the same</b>: after a new registration the clients' cards are right, only the administrator's
+approval is needed. The server and the name of a registered machine do not change: to change them, “Remove
+registration”, then “Register” with the new ones.</p>
+<p>If the server <b>does not know the machine</b> (the server's database was reset, the machine was removed in the
+admin panel), Lumen Host says “The server does not know the machine” and shows “Register”: it registers the machine
+again with the same token. “Token taken” — an old record is left on the server (the machine was unregistered here
+while the server was unreachable): remove it in the admin panel or press “Change the token”.</p>
+
+<h3 id="host-work">8.3. Day-to-day work</h3>
+<ul>
+  <li>The host is a service: it works without the Lumen Host window and before anyone signs in to Windows. The window
+  closes to the <b>tray</b>.</li>
+  <li><b>Turning the host off</b> — right-click the tray icon → “Turn off the host and quit”: the host turns off (if
+  someone is connected, Windows is locked first), nobody can connect. To turn it on again, start Lumen Host (the
+  shortcut) or press “Turn on the host” in its window.</li>
+  <li><b>“Start with Windows”</b> (on by default) — the host starts when the computer boots, before anyone signs in:
+  after a restart or after turning the host off in the tray, the machine is reachable again. Without it, the host
+  starts only with Lumen Host. The tray icon appears at sign-in while the host is on.</li>
+  <li><b>“Update when a newer client connects”</b> (on by default) — see <a href="#updates">section 13</a>.</li>
+  <li><b>“Keep the computer from sleeping”</b> (off by default) — while the service runs, the computer does not go to
+  sleep by itself, even if sleep is set up in Windows. For the whole machine. Sleep from the Start menu and closing a
+  laptop's lid still work; the monitor turns off by its own timer.</li>
+  <li><b>Log</b> — on the Settings tab, “Open folder” opens the host's log folder
+  <code>%ProgramData%\Lumen\host\logs</code> (<a href="#app-data">section 12</a>).</li>
+  <li><b>The settings are shared.</b> The server, the machine name and the token are one per computer: any user signed
+  in to Windows on this machine can change them (and “Change the token”), and that applies to everyone.</li>
+  <li><b>Who can connect.</b> The machine is always reachable: on the sign-in screen, on the lock screen and in any
+  account; you sign in to Windows with your own password. A session goes on even if someone signs in to another
+  account. One session per machine at a time: others see “Busy”.</li>
+  <li><b>Lock after a session.</b> The user closed the video window — the host locks Windows at once. The connection
+  broke — after 10 seconds, unless the same user reconnects in that time; if another user connects — at once, before
+  the first frame. Nobody's desktop stays open, neither on the machine's monitor nor for the next connection. If the
+  user has “Do not lock Windows after the session” on in Lumen Client, the host does not lock Windows after that
+  user's session (neither on closing nor on a broken connection); before another user's session it still locks.</li>
+  <li><b>Several users of one machine.</b> The first one worked and disconnected: their account is locked, programs keep
+  running. The second connects (the same token), chooses “Switch user” on the lock screen and signs in with their own
+  password; the video window reconnects by itself.</li>
+  <li><b>Restart from the client.</b> A user with approved access can restart the machine from Lumen Client
+  (<a href="#client-machines">9.2</a>): Windows restarts at once, open programs close without saving.</li>
+</ul>
+
+<h3 id="monitors">8.4. Virtual monitors</h3>
+<p>The host can add <b>up to two virtual monitors</b> to the machine's monitor: Windows sees them as real ones, and you
+can move windows onto them. This needs the <a href="https://github.com/aimbyLeet/lumen-vdd">Lumen VDD</a> driver, which
+ships inside the installer: when installing the host, check the task <b>“Virtual monitors (Lumen VDD driver)”</b>
+(unchecked by default; if the setup asks for a restart, restart). Without the driver everything works, the Monitors tab
+in Lumen Host says that the driver is not installed. A client gets <b>at most three monitors</b>: with two real ones you
+can add one virtual, with three or more — none. Real monitors are set up in Windows. Installing a new version over
+without the task updates an installed older driver and installs none where there is none; uninstalling Lumen removes
+the driver. A computer without a monitor — see <a href="#headless">8.5</a>.</p>
+<p>In Lumen Host, the <b>Monitors</b> tab:</p>
+<ul>
+  <li><b>The layout</b>: real monitors are grey, with a lock, and do not move. Virtual ones are yellow; dimmed — turned
+  off or not created yet, dashed — changed and not applied, red — over the limit of three.</li>
+  <li><b>Place</b> — drag a virtual monitor with the mouse: it snaps to a neighbour's edge (its start, middle or end),
+  Esc cancels. A monitor attaches only to a monitor with a lower number: put monitor 2 next to monitor 3 and they swap
+  numbers.</li>
+  <li><b>Resolution</b> (16:9, 16:10, 21:9; always 60 Hz) and <b>scale</b> (100–200 %) — in the panel on the right, for
+  the selected monitor.</li>
+  <li><b>“+”</b> adds a monitor, the <b>cross</b> in its corner removes it. Changes take effect with a button:
+  <b>“Create”</b> — create the monitors; <b>“Apply”</b> (the screen blinks: Windows rearranges the monitors);
+  <b>“Cancel”</b> — back as it was.</li>
+  <li><b>“Turn off”</b> — the monitors disappear, the settings stay; <b>“Turn on”</b> brings them back. The <b>bin</b>
+  — remove all virtual monitors and their settings.</li>
+  <li>The monitors exist <b>while the host is on</b> (the service): from power-on, on the sign-in screen and in any
+  account. Turn the host off in the tray — the monitors disappear, the settings stay; turn it on — they come back in the
+  same places.</li>
+  <li>The settings belong to the machine, shared by all accounts (<code>%ProgramData%\Lumen\monitors.json</code>,
+  written by the service). Windows keeps the scale per user: Lumen Host sets it at each user's sign-in.</li>
+  <li>The client sees all the machine's monitors — how to show them, see <a href="#client-window">9.3</a>.</li>
+</ul>
+
+<h3 id="headless">8.5. A computer without a monitor</h3>
+<p>If the host has the Lumen VDD driver (<a href="#monitors">8.4</a>) and Windows sees no physical monitor (the cable is
+out, the monitor is off and gone from the system), you can still connect: for the time of the connection the host
+creates <b>this client's virtual monitors</b>. “Client” here is a Lumen Client installation: a person's laptop and
+desktop have monitors of their own. A monitor emulator plug (HDMI dummy) is a physical monitor for Windows.</p>
+<ul>
+  <li><b>The first connection</b> of a client: Lumen Client shows “The remote computer's monitor” — choose the
+  resolution and scale (preselected as your monitor's) and press “Create”. The choice is kept on the host; the next
+  connections go without the question.</li>
+  <li><b>Change</b> the resolution and scale or add monitors (up to three in all) — during the connection, in Lumen Host
+  on the remote computer, the Monitors tab: it shows the connected client's monitors. Monitor 1 stays in place, its
+  resolution and scale change; the others are placed next to it as in 8.4. Changes — with “Apply”; they are kept for
+  this client. Lumen Client has no reset.</li>
+  <li><b>The end of the connection</b>: the video window closed — the monitors go at once; the connection broke — after
+  10 seconds, unless the same client is back. Windows locks as usual (<a href="#host-work">8.3</a>).</li>
+  <li>The machine's shared virtual monitors (8.4) are not created without a physical monitor. A physical monitor
+  plugged in during a connection — from then on as usual (the physical and the shared virtual ones), the client's
+  monitors stay saved; unplugged — the client's monitors at once (if there are none yet, Lumen Client asks for the
+  resolution again).</li>
+  <li>No driver — the connection does not start; Lumen Client shows the machine as <b>“No monitors”</b>.</li>
+</ul>
+
+<h2 id="client">9. Client: Lumen Client</h2>
+
+<h3 id="client-install">9.1. Installation</h3>
+<p>Run <code>lumen-setup-&lt;version&gt;.exe</code>, choose the language and “Client”. The client is installed for the
+current Windows user (<code>%LOCALAPPDATA%\Programs\Lumen</code>) and needs no administrator rights. On the first start
+— the <b>“Welcome”</b> page: <b>your name</b> (the administrator sees it when approving a connection; Latin letters,
+digits and signs only) and your organisation's <b>server</b> (the administrator gives you the address). “Continue”
+checks the server at once; in a local network it shows the certificate's fingerprint
+(<a href="#server-lan">5.3</a>). A client has one server. The language is the installer's; the globe switches it.</p>
+
+<h3 id="client-machines">9.2. Machines</h3>
+<ol>
+  <li>The name and the server are in the settings. While there are machines in the list they do not change; to change
+  them, remove all machines (removing the last one removes this computer from the server too, and the administrator
+  approves the requests again).</li>
+  <li>On the machines tab press <b>“Add a machine”</b> and enter the <b>token</b> that Lumen Host shows. The token is
+  hidden in the list; a click shows it. On disk the machines' tokens are encrypted for your Windows account (DPAPI): the
+  settings file copied to another computer or account will not open them.</li>
+  <li>The status says “Awaiting approval”. When the administrator approves — “Online”.</li>
+  <li><b>“Connect”</b> opens a window with the machine's screen. While connecting, the status shows how it goes (cancel
+  with “Disconnect”); as soon as the video window appears, Lumen Client leaves the screen and the taskbar, and comes
+  back when the video window is closed.</li>
+  <li><b>Options</b> (the “…” button of a machine): <b>“Restart”</b> — restarts the remote machine at once (only with
+  approved access and while the machine is online): whoever is connected is disconnected, open programs close without
+  saving; in a minute or two the machine is online again, at the Windows sign-in screen. <b>“Remove the machine”</b> —
+  removes the machine and its request on the server (Lumen Client asks first). When the last machine of the server is
+  removed, this computer is removed from the server too (if the server is unreachable, the administrator removes the
+  record in the admin panel).</li>
+</ol>
+
+<h3 id="client-window">9.3. The video window</h3>
+<ul>
+  <li>The mouse and the keyboard go to the host, Esc and Alt+F4 included, and while the video window is in front, also
+  the system shortcuts (Win, Alt+Tab and so on, see <a href="#client-settings">9.8</a>).</li>
+  <li><b>Close the window</b> — <code>Ctrl+Alt+Shift+Q</code> or the window's cross. <b>Ctrl+Alt+Del on the remote
+  machine</b> — <code>Ctrl+Alt+Shift+Del</code> (a plain Ctrl+Alt+Del always acts on your computer).</li>
+  <li>The window can be resized and maximised: the picture fits with its proportions kept, the rest is black.
+  <b>Borderless over the whole monitor and back</b> — <code>Ctrl+Alt+Shift+F</code> (the session goes on).</li>
+  <li>A machine <b>without a monitor</b> (<a href="#headless">8.5</a>): on the first connection the status is
+  “Choosing a monitor” and the window “The remote computer's monitor” asks for the resolution and scale — “Create”;
+  “Disconnect” — give up the connection. “No monitors” — the machine has no virtual monitor driver.</li>
+  <li><b>Several monitors</b> on the machine (real or virtual, see <a href="#monitors">8.4</a>). <b>At most three</b>
+  are shown: the primary, then the other real ones by their Windows number, then the virtual ones. A monitor plugged
+  into a non-NVIDIA output (for example the integrated graphics) is not shown. Three views,
+  <code>Ctrl+Alt+Shift+L</code> cycles through them:
+    <ol>
+      <li><b>all in one window</b> — the monitors as on the machine, scaled down to fit;</li>
+      <li><b>one monitor per window</b> — circles I / II / III at the top, a click shows that monitor; the machine sends
+      only the one shown; the mouse stops at its edge;</li>
+      <li><b>a window per monitor</b> — spread the windows over your monitors; <code>Ctrl+Alt+Shift+F</code> makes all
+      of them borderless, each on its own monitor (two windows on one monitor — refused with a hint). Closing any
+      window ends the connection.</li>
+    </ol>
+  The view, the monitor shown and the windows' places (with or without a frame, maximised) are kept on the machine's
+  card: the next connection is as before. If the machine's monitors have changed since (number, resolution,
+  arrangement), the connection starts in view 1; if they change during a connection — also view 1, without breaking
+  the connection.</li>
+  <li><b>The sharpest picture</b> (small text, colour) is at 1:1 — a host pixel to a screen pixel. You get it when the
+  window is exactly the host screen's size: a framed window opens so if the host's screen fits on the monitor (do not
+  stretch it), a borderless one if the host's and the monitor's resolutions match. A stretched or shrunk picture is
+  smoothed.</li>
+  <li>The cursor feels “sticky” — check that this computer has no frame limiter: “Max Frame Rate” in the NVIDIA
+  Control Panel, RTSS and similar programs (a 90 fps limit did that on a 120 Hz monitor).</li>
+</ul>
+
+<h3 id="client-clipboard">9.4. Clipboard and files</h3>
+<ul>
+  <li><b>Text</b> (up to 1 MB) — shared: copied on the remote machine, paste it here, and back. Only what is copied
+  after connecting goes across: the clipboard's earlier contents stay on their machine. Your text goes to the remote
+  machine only while the video window is in front: what you copy in other programs (a password, say) stays with you
+  until you switch to the video window. <b>Pictures</b> in the clipboard (an area from Photoshop, a screenshot) go
+  across the same way, byte for byte, up to 32 MB.</li>
+  <li><b>Files and folders</b> — through the clipboard too, both ways: copy them (Ctrl+C) on one machine and paste
+  (Ctrl+V) on the other. There is no drag and drop.
+    <ul>
+      <li><b>Up to 32 MB</b> (everything copied at once) — like a normal clipboard: the files go right after copying,
+      Ctrl+V pastes them where you paste (a folder, the desktop).</li>
+      <li><b>Over 32 MB</b> — the transfer starts on <code>Ctrl+V</code> or <code>Shift+Insert</code> (not from the
+      “Paste” menu), without questions, and the files go to the Downloads\Lumen folder
+      (<code>C:\Users\&lt;user&gt;\Downloads\Lumen</code>) of the machine where you pressed it. A name taken — “(1)” is
+      added.</li>
+      <li>The progress is in the picture's lower right corner: each download is a block of its own, new ones below:
+      name, direction, size, progress, speed, time left and “Cancel”; with more than one transfer, “Cancel all” at the
+      top. The panel opens by itself during a download and hides 5 s after the last one ends;
+      <code>Ctrl+Alt+Shift+D</code> shows or hides it; with no transfers — this session's history (done, cancelled,
+      failed — with the reason).</li>
+      <li>Files up to 32 MB do not open the panel by themselves; their progress is the “Clipboard” line at the bottom of
+      the panel (open it with <code>Ctrl+Alt+Shift+D</code>): everything copied as one line, because there is one
+      clipboard and it is overwritten.</li>
+      <li>While files come from the remote machine to you, the video gets coarser (they share the link), and recovers
+      afterwards. The administrator caps the file speed (default 100 Mbit/s).</li>
+      <li>The connection broke — after reconnecting the transfer goes on from the same place. Every file's integrity is
+      checked; an unfinished one lies as <code>name.part</code> and is deleted on cancel.</li>
+      <li>Nothing goes across: if the administrator turned files off (“file transfer is turned off by the
+      administrator”); while nobody is signed in to Windows on the remote machine (sign-in screen) or it is locked
+      (“the host is locked — sign in to Windows on the host”: sign in and paste again); if the disk is full.</li>
+    </ul></li>
+</ul>
+
+<h3 id="client-sound">9.5. Sound</h3>
+<p>The remote machine's sound is always heard here, nothing to turn on: whatever Windows plays there on the default
+output device (Opus, 128 kbit/s, stereo) comes out of this computer's default output device. The volume is set as usual,
+on this computer. The remote machine keeps playing its sound too. If the remote machine has no output device (no
+speakers, no sound over HDMI/DP), there is no sound — the overlay says “none”. The sound's latency is about 40 ms plus
+the network; with packet loss it breaks less often than the picture (each packet also carries the previous piece of
+sound).</p>
+
+<h3 id="client-overlay">9.6. Overlay</h3>
+<p><code>Ctrl+Alt+Shift+O</code> turns it on and off: a block at the bottom centre of the picture (on the picture itself,
+not on the black margins; it shrinks with it) that shows whether everything is fine and where lags come from. The
+header states it in words (green — “All good”, yellow — worth a look, red — a problem).</p>
+<ul>
+  <li><i>Metrics</i>: latency (from the remote computer's screen to yours, ms), smoothness (how many of the set frames
+  per second are shown), network response (round trip), packet loss, stream (the video's bitrate and its cap), sound
+  (ms from the sound on the remote machine to the sound here; yellow — the sound broke up recently, “none” — no
+  sound).</li>
+  <li><i>Latency over 10 seconds</i> — three graphs on one scale: host (capture and compression), network, this
+  computer (decoding and display); a red mark is a lost frame.</li>
+  <li><i>Video</i> — resolution, capture (the host's desktop in RGB 8 bit), codec, bit depth and chroma subsampling,
+  colour space and range, for example “3840×2160 · capture RGB 8 bit → HEVC 10 bit 4:2:0 · BT.709, full range”.</li>
+  <li>With several monitors the overlay is on the first one's picture; in the “window per monitor” view — only in the
+  main window.</li>
+</ul>
+
+<h3 id="client-status">9.7. Machine status</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Status</th><th>Meaning</th></tr>
+  <tr><td>Online / Offline</td><td>The machine is on the server or not.</td></tr>
+  <tr><td>No access</td><td>No request, or the administrator unlinked it: “Request access”.</td></tr>
+  <tr><td>Awaiting approval / Rejected</td><td>The request is not approved yet, or rejected (admin panel, the Requests block).</td></tr>
+  <tr><td>Busy</td><td>Another user is connected to the machine (one at a time).</td></tr>
+  <tr><td>Other version</td><td>The machine and this computer have different Lumen versions, and the host will not
+      update itself: it has “Update when a newer client connects” off, or this client is older than the host (update
+      the client — <a href="#updates">section 13</a>). An older host that updates itself shows “Online” with the
+      button “Update and connect”.</td></tr>
+  <tr><td>Host is updating…</td><td>The host installs the server's version; when it is done, the client connects by itself.</td></tr>
+  <tr><td>Host update failed</td><td>The host stayed on the old version; the reason is in the admin panel, in the machine's block.</td></tr>
+  <tr><td>Restarting…</td><td>A client restarted the machine; it is back after Windows starts.</td></tr>
+  <tr><td>Token not found</td><td>A typo in the token, or the host changed its token.</td></tr>
+  <tr><td>No connection</td><td>The server is unreachable.</td></tr>
+  <tr><td>Not on the server</td><td>The server does not know this computer (its database was reset or the
+      administrator removed it): “Request access” registers the computer again and sends requests for all machines of
+      this server.</td></tr>
+  <tr><td>Connecting / Connected / Waiting / Reconnecting</td><td>The session's progress. The video window appears only when the host has answered.</td></tr>
+  <tr><td>No answer</td><td>The host does not answer over the network, the program keeps trying
+      (<a href="#network">section 4</a>, <a href="#trouble-apps">15.2</a>).</td></tr>
+  <tr><td>Choosing a monitor / No monitors</td><td>A machine without a monitor (<a href="#headless">8.5</a>).</td></tr>
+  <tr><td>Video error</td><td>The video window closed with an error: the reason is in the log. The status stays until the next connection.</td></tr>
+</table>
+</div>
+<p>The button follows the state: <b>“Request access”</b> — no access; grey “Awaiting approval” and “Rejected”;
+<b>“Connect”</b> — access approved (active when the machine is online and of the same version); <b>“Update and
+connect”</b> — the host is older and updates itself; grey “Updates are off” or “Update the client” — the versions
+differ and the host will not update; <b>“Disconnect”</b> — while connecting.</p>
+
+<h3 id="client-settings">9.8. Settings</h3>
+<p>Settings are saved at once and take effect from the next connection. The keyboard shortcuts are on the help tab. The
+log's “Open folder” opens the folder of the log files.</p>
+<ul>
+  <li><b>Update automatically</b> (on by default) — see <a href="#updates">section 13</a>.</li>
+  <li><b>Frame rate</b> 30 or 60 fps and <b>bitrate cap</b> (Auto — by the resolution and frame rate; or 10–100
+  Mbit/s) — for all machines. If the administrator sets them, the fields are locked. The cap is fixed: Lumen does not
+  lower the quality by itself; on packet loss the host repairs the picture instead of resending a whole frame.</li>
+  <li><b>Video window without a frame</b> — the video window opens borderless over the whole monitor. The picture always
+  fits the window: larger than the screen — shrunk, smaller — enlarged, proportions kept (black margins at the
+  edges).</li>
+  <li><b>System shortcuts to the remote machine</b> (on by default) — while the video window is in front, Win, Alt+Tab,
+  Alt+Esc, Ctrl+Esc, Ctrl+Shift+Esc, PrintScreen and other Windows shortcuts go to the host, not to your computer. To
+  get to your own windows, minimise or close the video window (<code>Ctrl+Alt+Shift+Q</code>) or turn this setting
+  off. <code>Ctrl+Alt+Del</code> and <code>Win+L</code> always stay on your computer.</li>
+  <li><b>Do not lock Windows after the session</b> (off by default) — when the session ends (you closed the video
+  window or the connection broke), the remote machine stays as it is: programs open, no password to enter. Mind that its
+  desktop is open to anyone sitting at it. If another user connects next, Windows is still locked before their
+  session.</li>
+</ul>
+
+<h2 id="first">10. First connection, step by step</h2>
+<ol>
+  <li>Network: WireGuard or Tailscale, the client pings the host (<a href="#network">section 4</a>).</li>
+  <li>The server is installed, the admin panel opens (<a href="#quick-start">section 2</a>, <a href="#admin">section 7</a>).</li>
+  <li>On the host: install with “Host”, open Lumen Host, enter the server, “Register”, copy the token
+  (<a href="#host-register">8.2</a>).</li>
+  <li>On the client: install with “Client”, enter your name and the server on the Welcome page, then “Add a machine”
+  with the token (<a href="#client-machines">9.2</a>).</li>
+  <li>In the admin panel, in the Requests block — “Approve”.</li>
+  <li>In the client — “Connect”.</li>
+</ol>
+
+<h2 id="many">11. Deploying to many machines</h2>
+<p>The installer runs without questions:</p>
+<pre><code>lumen-setup-0.9.0.exe /VERYSILENT /SUPPRESSMSGBOXES /ALLUSERS /TYPE=host
+lumen-setup-0.9.0.exe /VERYSILENT /SUPPRESSMSGBOXES /ALLUSERS /TYPE=host /TASKS="desktopicon,vdd"
+lumen-setup-0.9.0.exe /VERYSILENT /SUPPRESSMSGBOXES /TYPE=client</code></pre>
+<ul>
+  <li>The host — as administrator and always with <code>/ALLUSERS</code>; the second line adds the Lumen VDD driver
+  (<a href="#monitors">8.4</a>; <code>/TASKS="vdd"</code> — without the desktop shortcut). Whether a restart is needed
+  is not reported by the exit code: look in the setup's log (<code>/LOG="C:\lumen-setup.log"</code>), the line
+  <code>lumen-vdd-setup install: 3010</code>.</li>
+  <li>The client — as the user who will use it (it goes into their profile, without administrator rights).</li>
+  <li>Without the desktop shortcut — add <code>/TASKS=""</code>.</li>
+  <li>The host's registration (one per machine, from any account) and the client's machines are done in the
+  programs.</li>
+</ul>
+<p><b>Uninstalling</b> — Settings → Apps → Lumen. The uninstaller asks whether to <b>delete user data</b> (default: no).
+With the box checked, for a host: the machine's key, registration and token, the host's and the virtual monitors'
+settings, the logs (for all Windows users of the computer); for a client: this user's key, name, server, machines,
+settings and logs. A new install then starts from scratch: the machine gets a new token, the server sees the client as
+a new computer, access is approved again; remove the old records in the admin panel. Without the box, the data stays
+and a reinstall goes on from where it was. Without questions — <code>unins000.exe</code> from the program's folder,
+with the data — add <code>/PURGE=1</code>:</p>
+<pre><code>"C:\Program Files\Lumen\unins000.exe" /VERYSILENT
+"%LOCALAPPDATA%\Programs\Lumen\unins000.exe" /VERYSILENT /PURGE=1</code></pre>
+
+<h2 id="app-data">12. Where the apps keep their data</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>What</th><th>Where</th></tr>
+  <tr><td>Programs: host</td><td><code>C:\Program Files\Lumen</code> (the driver package: <code>vdd</code> inside)</td></tr>
+  <tr><td>Programs: client</td><td><code>%LOCALAPPDATA%\Programs\Lumen</code></td></tr>
+  <tr><td>The host's machine data: key, token, registration (written by the service only)</td><td><code>%ProgramData%\Lumen\host</code></td></tr>
+  <tr><td>The host's machine settings: virtual monitors, clients' monitors, sleep, updates</td>
+      <td><code>%ProgramData%\Lumen</code> (<code>monitors.json</code>, <code>client-monitors.json</code>,
+      <code>power.json</code>, <code>update.json</code>)</td></tr>
+  <tr><td>The host's logs: a file per session <code>lumen-host-&lt;date-time&gt;.log</code></td><td><code>%ProgramData%\Lumen\host\logs</code></td></tr>
+  <tr><td>The service's logs: a file per service start <code>service-&lt;date-time&gt;.log</code></td><td><code>%ProgramData%\Lumen\logs</code></td></tr>
+  <tr><td>Settings of the user: Lumen Client (key, name, server, machines, trusted servers) and the Lumen Host window
+      (<code>host-app.json</code>)</td><td><code>%APPDATA%\Lumen</code></td></tr>
+  <tr><td>The user's logs: Lumen Client and its video windows (<code>client-&lt;date-time&gt;.log</code>), the Lumen Host
+      window (<code>host-&lt;date-time&gt;.log</code>)</td><td><code>%LOCALAPPDATA%\Lumen\logs</code></td></tr>
+  <tr><td>Updates downloaded by the client</td><td><code>%LOCALAPPDATA%\Lumen\updates</code></td></tr>
+  <tr><td>WebView2 data of the windows</td><td><code>%LOCALAPPDATA%\io.github.aimbyleet.lumen.host</code>,
+      <code>%LOCALAPPDATA%\io.github.aimbyleet.lumen.client</code></td></tr>
+  <tr><td>Large files received</td><td><code>%USERPROFILE%\Downloads\Lumen</code></td></tr>
+</table>
+</div>
+<p>Logs keep the 10 newest files, older ones are deleted; a file over 10 MB continues in the next one (named by the time
+it started).</p>
+
+<h2 id="updates">13. Updates</h2>
+<p>A new version comes with the server: the server's archive contains the installer of its version. Update the server
+(<a href="#maint-update">14.2</a>), and Lumen Host and Lumen Client see that they are older than the server and install
+its version by themselves, without windows and without administrator rights. Before installing they check the size and
+the checksum of the download; they never go back to an older version.</p>
+<ul>
+  <li><b>The yellow footer</b> at the bottom of the Lumen Host or Lumen Client window — “Your version is out of date.
+  Click to update”: the server has a newer version. Click → confirm → the program closes, installs the new version and
+  starts again (a session in progress is cut off). This works at any time, whatever the switches below say.</li>
+  <li><b>Lumen Client</b>, “Update automatically” (settings, on by default): at start the client checks the server (for
+  a few seconds at most) and, if there is a newer version, installs it right away and starts already updated. The
+  server did not answer — the installed version starts with the yellow footer. While the client is open it does not
+  update itself. Without the switch — only by clicking the footer.</li>
+  <li><b>Lumen Host</b>, “Update when a newer client connects” (settings, on by default): the host updates <b>when a
+  client of a newer version connects to it</b> — quietly, by the service itself, also with Windows locked. The client
+  shows “Host is updating…” and connects by itself a few seconds later. While another user is connected, the machine is
+  busy and does not update. Without the switch — only by clicking the footer.</li>
+  <li><b>It failed</b> (the download, the checksum, the installer, an antivirus) — the program keeps working on the old
+  version, the reason is in the footer. A host's failure is also seen by the client (“Host update failed”) and in the
+  admin panel, in the machine's block. The server hands out updates to at most 16 devices at once (“The server is busy
+  with other updates; try again later”).</li>
+</ul>
+<p>The usual order: update the server → users start Lumen Client (it updates itself) → they connect to their machines
+(the hosts update themselves). Nothing needs to be installed on the machines by hand.</p>
+<div class="note">The installer is not digitally signed yet: Windows SmartScreen may warn about it (“More info” → “Run
+anyway”), and the programs trust the server they are connected to. So update the server only from an archive you built
+yourself or downloaded from a trusted place (<a href="https://github.com/aimbyLeet/lumen/releases">GitHub
+Releases</a>), and do not give strangers access to the server.</div>
+<div class="warn"><b>Coming from a version older than 0.7.0</b> — once, by hand: on the client computers first uninstall
+the old Lumen (Settings → Apps → Lumen): the client now installs per user, not into Program Files, and the new
+installer does not remove the old one. The client's machine cards are not carried over: on the first start enter the
+name and the server and add the machines by token again; the client's key (<code>%APPDATA%\Lumen</code>) survives the
+uninstall, so the server recognises the computer and the approved access stays. The host installs over the old one as
+usual. After that the programs update themselves.</div>
+
+<h2 id="maintenance">14. Server maintenance</h2>
+<p>Status, update and removal — <code>install.sh</code>: it copied itself to <code>/opt/lumen-server</code> during the
+installation, so status and removal need no archive.</p>
+
+<h3 id="maint-status">14.1. Status</h3>
+<p><code>sudo /opt/lumen-server/install.sh --mode status</code> (or the menu item 5) shows the version, the mode, whether
+the container runs, the addresses, the admin's login, the fingerprint (local network) or the certificate's expiry
+(domain) and the end of the log.</p>
+
+<h3 id="maint-update">14.2. Update</h3>
+<p>Upload the new version's archive, unpack it and choose “Update” (offered by default when a server is installed):</p>
+<pre><code>cd /tmp &amp;&amp; tar xzf lumen-server-0.9.0.tar.gz
+sudo bash lumen-server-0.9.0/install.sh --mode update</code></pre>
+<p>The database, the settings and the key (the fingerprint) stay; the image, the download page and the installer the
+server gives the programs are updated, older images are removed. The script asks before installing a version older than
+the installed one. The programs then update themselves (<a href="#updates">section 13</a>). A server installed by hand
+the old way (the archive unpacked into <code>/opt/lumen-server</code>, nginx set up by hand) is updated the same way:
+the script keeps your nginx config and removes the old leftovers.</p>
+
+<h3 id="maint-settings">14.3. Changing settings</h3>
+<p>The settings are in <code>/opt/lumen-server/.env</code> (for example <code>LUMEN_ADMIN_PASSWORD</code>; values
+without <code>$</code>). After editing, restart the container:</p>
+<pre><code>cd /opt/lumen-server &amp;&amp; docker compose up -d</code></pre>
+<p>To change the mode or the domain, remove the server keeping the data (<a href="#maint-remove">14.5</a>) and install
+it again: the database is picked up.</p>
+
+<h3 id="maint-commands">14.4. Commands without the browser</h3>
+<p>On the server, as root: the log and the administrator's commands (the same database as the admin panel). IDs come
+from <code>hosts</code> and <code>clients</code>; <code>approve 3 7</code> approves client 3 for machine 7.</p>
+<pre><code>docker logs --tail 50 lumen-server
+docker exec lumen-server lumen-server access --status pending
+docker exec lumen-server lumen-server hosts
+docker exec lumen-server lumen-server clients
+docker exec lumen-server lumen-server approve 3 7
+docker exec lumen-server lumen-server files show
+docker exec lumen-server lumen-server --help</code></pre>
+<p>Others: <code>reject</code>, <code>unlink</code>, <code>unlink-all</code>, <code>remove</code>,
+<code>override</code> (frame rate and cap), <code>files</code> (file transfer and its speed cap), <code>cap</code>
+(the Auto caps by resolution and frame rate).</p>
+
+<h3 id="maint-remove">14.5. Removal</h3>
+<p><code>sudo /opt/lumen-server/install.sh --mode remove</code> (or the menu item 6) removes the container, the images,
+our nginx site and the download page, and the ufw rules the script opened. It asks whether to delete the database and
+the key: if kept (the default), they stay in <code>/opt/lumen-server/data</code> and a new installation picks them up
+(the same fingerprint, devices and access). It also asks whether to delete the Let's Encrypt certificate (default: no).
+Docker and nginx stay installed.</p>
+
+<h2 id="trouble">15. Troubleshooting</h2>
+
+<h3 id="trouble-server">15.1. Server installation</h3>
+<p>The script stops at a line with <b>✗</b> and says why and what to do. Nothing is left half done: if nginx did not
+accept our config or certbot did not get the certificate, nginx goes back to what it was. Fix the cause and run the
+script again.</p>
+<div class="table-wrap">
+<table>
+  <tr><th>What you see</th><th>What to do</th></tr>
+  <tr><td>“The domain … does not resolve”</td><td>The A record is not there yet or has not propagated:
+      <code>getent hosts lumen.example.com</code>, wait and run again.</td></tr>
+  <tr><td>“certbot did not get the certificate”</td><td>Port 80 is closed (ufw or the provider's firewall) or the A
+      record points elsewhere. Our site is removed from nginx — just run again.</td></tr>
+  <tr><td>“… is already served by nginx”</td><td>The domain is in another nginx config (the script names it). Use
+      another subdomain or remove that site.</td></tr>
+  <tr><td>“nginx's config has an error already”</td><td>The error was there before: fix it (<code>nginx -t</code>), then
+      run the script.</td></tr>
+  <tr><td>“Port … is taken”</td><td>The script says by whom. In a local network you can choose another port; with a
+      domain, port 7443 must be free.</td></tr>
+  <tr><td>“The server did not start”</td><td>The log is printed above it (<code>docker logs lumen-server</code>).</td></tr>
+  <tr><td>The admin panel does not open</td><td><code>sudo /opt/lumen-server/install.sh --mode status</code>: is the
+      container running, the end of the log.</td></tr>
+</table>
+</div>
+
+<h3 id="trouble-apps">15.2. Lumen Host and Lumen Client</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>Message / symptom</th><th>What to do</th></tr>
+  <tr><td>“No connection to the server”</td>
+      <td>Check the server's address (the domain), that port 7443 is open (<code>ufw</code> and the provider's
+      firewall) and the server runs (<code>install.sh --mode status</code>). From the computer:
+      <code>Test-NetConnection lumen.example.com -Port 7443</code>. A domain behind Cloudflare — only with the grey
+      cloud (DNS only).</td></tr>
+  <tr><td>Lumen Client: “No monitors”</td>
+      <td>The remote computer has no physical monitor and no Lumen VDD driver: plug in a monitor (or an emulator plug)
+      or install the host again with “Virtual monitors” (<a href="#monitors">8.4</a>, <a href="#headless">8.5</a>).</td></tr>
+  <tr><td>Lumen Host, Monitors tab: “The virtual monitor driver is not installed”</td>
+      <td>Run the installer again and check “Virtual monitors”. If it says a restart is needed — restart.</td></tr>
+  <tr><td>Monitors: an arrangement error, the monitors are not where the layout shows</td>
+      <td>Press “Apply” again. If that does not help — the service's log <code>%ProgramData%\Lumen\logs</code>
+      (<code>monitors:</code> lines; readable by an administrator).</td></tr>
+  <tr><td>Lumen Host: “The server does not know the machine”</td>
+      <td>The server's database was reset or the machine was removed in the admin panel. “Register” (the token stays);
+      users will need the approval again.</td></tr>
+  <tr><td>Lumen Host: “Token taken”</td>
+      <td>An old record of this machine is left on the server. Remove it in the admin panel (Machines) or “Change the
+      token”.</td></tr>
+  <tr><td>Lumen Host: “Another server version”</td><td>Update the server or Lumen Host.</td></tr>
+  <tr><td>Lumen Client: “Not on the server”</td>
+      <td>The server's database was reset or the computer was removed in the admin panel. “Request access” — the
+      computer registers again, the administrator approves the requests.</td></tr>
+  <tr><td>“No host with this token on the server”, status “Token not found”</td>
+      <td>A typo in the token, or the host changed its token — ask for the new one.</td></tr>
+  <tr><td>“Awaiting approval” does not change</td><td>The administrator has not approved the request yet (admin panel, Requests).</td></tr>
+  <tr><td>Status “No answer”, the video window does not open</td>
+      <td>The client does not reach the host over the network. Check WireGuard or Tailscale on both machines
+      (<code>ping</code> the host's address) and the host's firewall (UDP 9000–9009). Open Lumen Client's log
+      (<a href="#network">section 4</a>, the <code>session:</code> lines): if <code>routes</code> shows another VPN's
+      adapter (<code>adapter</code>) or <code>"default": true</code> (the route to the internet), turn that VPN off or
+      add a Windows route to the subnet from <code>host_nets</code>. Check for a VPN on the host too.</td></tr>
+  <tr><td>The host's log has <code>repeated handshake</code> and <code>nothing from the client for 10s</code>, and the
+      client does not connect</td>
+      <td>The client's requests arrive, the host's answers do not. Most often another VPN is on at the host and the
+      answers go into its tunnel. Turn it off or exclude the WireGuard network from it.</td></tr>
+  <tr><td>Lumen Client: the name and server fields are grey</td>
+      <td>They cannot change while there are machines in the list: remove all machines, change them, add the machines
+      again (the administrator approves the requests again).</td></tr>
+  <tr><td>Yellow footer: “The update failed: …”</td>
+      <td>The reason is in the footer. “The server is busy with other updates” — wait and click again (the server
+      hands out updates to at most 16 devices at once). An antivirus removed files — see below. If nothing helps,
+      install the installer from the server's download page by hand.</td></tr>
+  <tr><td>After an update there are two Lumen Clients</td>
+      <td>The old client (before 0.7.0, in Program Files) was not uninstalled first: uninstall it in Settings → Apps
+      (<a href="#updates">section 13</a>).</td></tr>
+  <tr><td>Transfers: “file transfer is turned off by the administrator”</td>
+      <td>File transfer is off in the admin panel (Settings, or the client's block).</td></tr>
+  <tr><td>Transfers: “nobody is signed in to Windows on the host”</td>
+      <td>Sign in to Windows on the remote machine (through the video window) and paste again.</td></tr>
+  <tr><td>Transfers: “the host is locked — sign in to Windows on the host”</td>
+      <td>While Windows on the remote machine is locked, files go neither way. Sign in (through the video window) and
+      paste again — no need to copy again.</td></tr>
+  <tr><td>Ctrl+V of a large file does nothing</td>
+      <td>Large files go only on <code>Ctrl+V</code> / <code>Shift+Insert</code>, not from the “Paste” menu. Copy them
+      again after connecting: what was copied before is not sent.</td></tr>
+  <tr><td>Lumen Host log: <code>update the NVIDIA driver</code></td><td>Install NVIDIA driver 570 or newer.</td></tr>
+  <tr><td>Lumen Host log: <code>not an NVIDIA GPU</code></td>
+      <td>The monitor is plugged into the integrated graphics (Optimus laptops). Plug it into the NVIDIA card or choose
+      the discrete card in the NVIDIA settings.</td></tr>
+  <tr><td>Certificate errors (<code>invalid peer certificate</code>)</td>
+      <td>For a server with a domain, enter the domain in the programs, not the IP. On the server:
+      <code>install.sh --mode status</code> (the certificate's expiry, the log).</td></tr>
+  <tr><td>“The server's certificate has changed”</td>
+      <td>A local-network server was reinstalled with its data deleted — compare the new fingerprint (Status in
+      <code>install.sh</code>) and trust it (the “Check the certificate” button of the machine in Lumen Client; in Lumen Host —
+      remove the registration and register again). If the server was not reinstalled, do not trust it: someone else
+      answers at that address.</td></tr>
+  <tr><td>An antivirus deletes <code>lumen-host.exe</code></td>
+      <td>The program is not signed, and screen capture + input + network look like a remote administration tool to
+      heuristics. Add the folder <code>C:\Program Files\Lumen</code> to the exclusions.</td></tr>
+</table>
+</div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+[package]
+name = "capture"
+description = "DXGI Desktop Duplication capture into D3D11 textures"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+windows.workspace = true
+gpu-convert.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }

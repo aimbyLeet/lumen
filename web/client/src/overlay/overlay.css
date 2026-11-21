@@ -1,0 +1,310 @@
+/* Over the picture. The window is transparent: only the blocks show. Sizes are at 1:1, `--k` scales them with the picture.
+   A block is built as in the admin: a head, then headed panels (web/admin/src/style.css, .entry.open, .panel). */
+@import "../tokens.css";
+@import "../components.css";
+
+* {
+  box-sizing: border-box;
+}
+:root,
+html,
+body,
+#root {
+  background: transparent;
+}
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+body {
+  overflow: hidden;
+  user-select: none;
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h3 {
+  margin: 0;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.stage {
+  position: absolute;
+  overflow: hidden;
+  --edge: 24px;
+  --inset: 10px;
+}
+
+/* A block */
+.block,
+.notice {
+  position: absolute;
+  zoom: var(--k);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--bg-lowest);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.block-head {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 15px;
+  border-bottom: 1px solid var(--line);
+  border-radius: 5px 5px 0 0;
+  background: var(--bg-high);
+}
+.block-head h3 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+.block-body {
+  padding: 8px calc(15px - var(--inset)) 12px;
+}
+.section-side {
+  font-weight: 400;
+  color: var(--text-3);
+}
+section + section {
+  margin-top: 12px;
+}
+.btn.small {
+  height: 26px;
+  padding: 0 10px;
+  flex: none;
+}
+.normal {
+  --c: var(--text);
+}
+.warn {
+  --c: var(--wait);
+}
+.bad {
+  --c: var(--bad);
+}
+
+/* The numbers: at the bottom centre of the picture */
+.stats {
+  left: 50%;
+  bottom: var(--edge);
+  transform: translateX(-50%);
+  width: 640px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 16px;
+  padding: 10px calc(var(--inset) - 1px) 12px;
+}
+.metric span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.metric b {
+  font: 500 12px/18px var(--mono);
+  color: var(--c);
+}
+.charts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.chart {
+  min-width: 0;
+  padding: 10px calc(var(--inset) - 1px) 10px;
+}
+.chart + .chart {
+  border-left: 1px solid var(--line-soft);
+}
+.chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.chart-head b {
+  font: 500 12px/18px var(--mono);
+  color: var(--text);
+}
+.chart svg {
+  display: block;
+  width: 100%;
+  height: 56px;
+  overflow: visible;
+  border-bottom: 1px solid var(--line);
+}
+.chart-line {
+  fill: none;
+  stroke: var(--active);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.chart-lost {
+  stroke: #ff5449;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+.video-line {
+  padding: 8px calc(var(--inset) - 1px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-2);
+  font: 12px/18px var(--mono);
+}
+
+/* The transfers: at the bottom right of the picture; the same distance from the edge */
+.transfers {
+  right: var(--edge);
+  bottom: var(--edge);
+  width: 440px;
+  max-height: calc(100% - 2 * var(--edge));
+  display: flex;
+  flex-direction: column;
+}
+/* Too many for the picture: the downloads scroll, the head and the clipboard stay. */
+.transfers .block-body,
+.transfers section {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.transfers section:last-child {
+  flex: none;
+}
+/* Each transfer is a panel of its own. In reverse: the list grows upward, and what does not fit is the oldest. */
+.rows-list {
+  min-height: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  overflow-y: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.rows-list::-webkit-scrollbar {
+  width: 6px;
+}
+.rows-list::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.22);
+}
+.row {
+  flex: none;
+  padding: 10px calc(var(--inset) - 1px) 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--bg-low);
+}
+.row.empty {
+  padding: 12px calc(var(--inset) - 1px);
+  font-size: 12px;
+  color: var(--text-3);
+}
+.row-head {
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.row-head b {
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row-way {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.transfer-state {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-2);
+  font: 12px/18px var(--mono);
+}
+.transfer-state.done {
+  color: var(--ok);
+}
+.transfer-state.bad {
+  color: var(--bad);
+}
+.bar {
+  height: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--bg-lowest);
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+.bar i.done {
+  background: var(--ok);
+}
+.bar i.bad {
+  background: var(--bad);
+}
+
+/* Mode 2: the monitors, at the top centre of the picture */
+.switcher {
+  position: absolute;
+  zoom: var(--k);
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+.dot {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--bg-lowest);
+  color: var(--text-2);
+  font: 600 13px/1 var(--mono);
+}
+.dot:hover {
+  background: var(--bg-bright);
+  color: var(--text);
+}
+.dot.on,
+.dot.on:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* Something to say for a moment: at the top, the numbers are at the bottom; under the circles */
+.notice {
+  left: 50%;
+  top: 60px;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  font-size: 14px;
+  line-height: 20px;
+}

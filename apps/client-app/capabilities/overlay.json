@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "overlay",
+  "description": "The overlay page over the video: it listens to the session's state and sends the app's own commands.",
+  "windows": ["overlay"],
+  "permissions": ["core:event:default"]
+}

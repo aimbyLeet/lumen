@@ -1,0 +1,21 @@
+[package]
+name = "lumen-decode"
+description = "Decodes an HEVC Main10 file with the NVDEC decoder and checks it against a reference"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lumen-decode"
+path = "src/main.rs"
+
+[target.'cfg(any(windows, lumen_check))'.dependencies]
+anyhow.workspace = true
+clap.workspace = true
+color.workspace = true
+decoder.workspace = true
+gpu-convert.workspace = true
+windows.workspace = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(lumen_check)'] }
